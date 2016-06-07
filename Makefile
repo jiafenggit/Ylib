@@ -5,49 +5,24 @@
 # Library's static name (libNAME.a)
 NAME	=	liby.a
 
-SRC_HASH =	yhashmap.c	\
-		yhashtable.c	\
-		ystr.c		\
-		yvect.c		\
-		yhashstack.c
-
 # Name of source files (names.c)
-SRC       =	ymalloc.c	\
-		ystr.c		\
-		yvect.c		\
-		ylog.c		\
-		ybase64.c	\
-		ysax.c		\
-		ydom.c		\
-		ydom_xpath.c	\
-		yurl.c		\
-		yqprintable.c	\
-		ycgi.c		\
-		ychrono.c	\
-		ycrc.c		\
-		yvalue.c	\
-		ylock.c		\
-		ytcp_server.c	\
-		ynetwork.c
+SRC       =	ylib.c
 
 # Name of header files (names.h)
-HEADS     =	ybase64.h	\
-		ycgi.h		\
-		ychrono.h	\
-		ycrc.h		\
-		ydefs.h		\
-		ydom.h		\
-		yerror.h	\
-		ylog.h		\
-		yqprintable.h	\
-		ysax.h		\
-		ystr.h		\
-		yurl.h		\
-		yvalue.h	\
-		yvect.h		\
-		ylock.h		\
-		ytcp_server.h	\
-		ynetwork.h
+HEADS     =	ylib.h
+
+CAT_H	=	ydefs.h	\
+		ymem.h	\
+		ystr.h	\
+		yvect.h \
+		yhash.h \
+		ymap.h
+
+CAT_C	=	ymem.c	\
+		ystr.c	\
+		yvect.c \
+		yhash.c \
+		ymap.c
 
 # #####################################################################
 
@@ -63,10 +38,9 @@ EXEOPT  =       -O2 # -g for debug
 CC      =	gcc
 RM      =	/bin/rm -f
 OBJS    =	$(SRC:.c=.o)
-OBJS_HASH =	$(SRC_HASH:.c=.o)
 
 # Objects compilation options
-CFLAGS  =	-ansi -std=c90 -pedantic -Wall -Wextra -Wmissing-prototypes \
+CFLAGS  =	-ansi -std=c99 -pedantic -Wall -Wextra -Wmissing-prototypes \
 		  -Wno-long-long -Wno-pointer-arith $(IPATH) -D_GNU_SOURCE \
 		  -D_LARGEFILE_SOURCE -D_THREAD_SAFE -fPIC
 CFLAGS_CYGWIN =	-Wall -Wmissing-prototypes -Wno-long-long $(IPATH) \
@@ -74,22 +48,24 @@ CFLAGS_CYGWIN =	-Wall -Wmissing-prototypes -Wno-long-long $(IPATH) \
 
 # #####################################################################
 
-.PHONY: lib cygwin clean all cygall doc docclean hash cleanhash allhash
-
-hash: $(OBJS_HASH) $(SRC_HASH)
-	ar -r $(NAME) $(OBJS_HASH)
-	ranlib $(NAME)
-
-cleanhash:
-	$(RM) $(OBJS_HASH) $(NAME) *~
-
-allhash: cleanhash hash
-
-$(NAME): $(OBJS) $(SRC)
+$(NAME): gen_sources $(OBJS) $(SRC)
 	ar -r $(NAME) $(OBJS)
-	ranlib $(NAME)
-	cp $(NAME) ../
-	cp $(HEADS) ../../include/
+
+gen_sources: $(CAT_C) $(CAT_H)
+	@echo "Generate ylib.c file"
+	@cp _ylib_begin.c ylib.c
+	@for f in $(CAT_C); do \
+		echo -n "#line 1 \"" >> ylib.c; \
+		echo -n $$f >> ylib.c; \
+		echo "\"" >> ylib.c; \
+		cat $$f >> ylib.c; \
+	 done
+	@cat _ylib_end.c >> ylib.c
+	@echo "Generate ylib.h file"
+	@cat _ylib_begin.h $(CAT_H) _ylib_end.h > ylib.h
+
+test: $(NAME) main.c
+	$(CC) main.c -L. -ly -Wl,-rpath -Wl,'$$ORIGIN' -o test
 
 cygwin: $(SRC)
 	$(CC) $(CFLAGS_CYGWIN) -c $(SRC)
@@ -98,7 +74,7 @@ cygwin: $(SRC)
 	cp $(NAME) ../
 
 clean:
-	$(RM) $(OBJS) $(NAME) *~
+	$(RM) $(OBJS) $(NAME) $(SRC) $(HEADS) test *~
 
 all: clean $(NAME)
 
