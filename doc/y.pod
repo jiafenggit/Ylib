@@ -1,0 +1,32 @@
+=pod
+
+=head1 NAME
+
+Ylib
+
+=head1 DESCRIPTION
+
+General-purpose C library.
+
+=head1 HIERARCHY
+
+=over 4
+
+=item B<y.sys>
+
+Memory management
+
+=item B<y.str>
+
+Buffered strings
+
+=item B<y.vect>
+
+Vectors (buffered data arrays)
+
+=item B<y.map>
+
+Hash maps
+
+=back
+

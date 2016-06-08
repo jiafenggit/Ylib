@@ -1,0 +1,31 @@
+=pod
+
+=head1 NAME
+
+y.sys
+
+=head1 DESCRIPTION
+
+System-level functions.
+
+=head1 FUNCTIONS
+
+=over 4
+
+=item B<y.sys.malloc>
+
+Memory allocation
+
+=item B<y.sys.calloc>
+
+Chunked memory allocation
+
+=item B<y.sys.free>
+
+Memory deallocation
+
+=back
+
+=head1 void *y.sys.malloc(size_t size)
+
+
