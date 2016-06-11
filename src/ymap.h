@@ -8,6 +8,10 @@
 #ifndef __YMAP_H__
 #define __YMAP_H__
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif /* __cplusplus || c_plusplus */
+
 /** @define YHM_MAX_LOAD_FACTOR	Maximum load factor of a hash map before increasing it. */
 #define YHM_MAX_LOAD_FACTOR	0.7
 
@@ -64,5 +68,84 @@ typedef struct ymap_s {
 	ymap_function_t	destroy_func;
 	void		*destroy_data;
 } ymap_t;
+
+/**
+ * @function	ymap_create
+ *		Creates a new hash map.
+ * @param	size		Initial size of the hash map.
+ * @param	destroy_func	Pointer to the function called when an element is removed.
+ * @param	destroy_data	Pointer to some suer data given to the destroy function.
+ * @return	The created hash map.
+ */
+ymap_t *ymap_create(size_t size, ymap_function_t destroy_func, void *destroy_data);
+
+/**
+ * @function	ymap_free
+ *		Destroy a hash map.
+ * @param	hash	Pointer to the hash map.
+ */
+void ymap_free(ymap_t *hashmap);
+
+/**
+ * @function	ymap_add
+ *		Add an element to a hash map.
+ * @param	hashmap	Pointer to the hash map.
+ * @param	key	Key used to index the element.
+ * @param	data	The element's data.
+ */
+void ymap_add(ymap_t *hashmap, char *key, void *data);
+
+/**
+ * @function	ymap_search
+ *		Search an element in a hash map, and returns its value. Returns
+ *		NULL if the elements doesn't exist (and if it exists and contains
+ *		NULL as its value).
+ * @param	hashmap	Pointer to the hash map.
+ * @param	key	Key used to index the element.
+ * @return	A pointer to the element's data.
+ */
+void *ymap_search(ymap_t *hashmap, const char *key);
+
+/**
+ * @function	ymap_search_element
+ *		Search an element in a hash map, and returns a pointer to the
+ *		element item. Returns NULL if the element doesn't exist. This
+ *		function is useful to find an element wich contains the NULL value,
+ *		or to chek if an element exists.
+ * @param	hashmap	Pointer to the hash map.
+ * @param	key	Key used to index the element.
+ * @return	A pointer to the element's structure.
+ */
+ymap_element_t *ymap_search_element(ymap_t *hashmap, const char *key);
+
+/**
+ * @function	ymap_remove
+ * 		Remove an element from a hash map.
+ * @param	hashmap	Pointer to the hash map.
+ * @param	key	Key used to index the element.
+ * @return	true if the element was found, false otherwise.
+ */
+bool ymap_remove(ymap_t *hashmap, const char *key);
+
+/**
+ * @function	ymap_resize
+ *		Resize a hash map.
+ * @param	hashmap	Pointer to the hash map.
+ * @param	size	The new size.
+ */
+void ymap_resize(ymap_t *hashmap, size_t size);
+
+/**
+ * @function	ymap_foreach
+ *		Apply a function on every elements of a hash map.
+ * @param	hashmap		Pointer to the hash map.
+ * @param	func		Pointer to the executed function.
+ * @param	user_data	Pointer to some user data.
+ */
+void ymap_foreach(ymap_t *hashmap, ymap_function_t func, void *user_data);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif /* __cplusplus || c_plusplus */
 
 #endif /* __YHASHMAP_H__ */

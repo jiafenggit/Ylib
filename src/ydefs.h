@@ -12,6 +12,12 @@
 #ifndef __YDEFS_H__
 #define __YDEFS_H__
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif // __cplusplus || c_plusplus
+
+#include <stdlib.h>
+
 /* checks the C compiler version */
 #if defined (__STDC__)
   /*! @define COMPILER_C89 The compiler is compatible with C89. */
@@ -29,7 +35,6 @@
 #  endif
 # endif
 #endif
-
 
 /*!
  * @struct	ybin_s
@@ -173,8 +178,8 @@ typedef long double f96_t;
 /*! @define ARRAY_SIZE Return the number of elements in an array. */
 #define ARRAY_SIZE(a)	(sizeof(a) / sizeof(a[0]))
 
-/* ******* MEMORY MANAGEMENT ********** */
-/*! @define YFREE Memory liberation macro. */
-#define	YFREE(p)	((void*)p ? (free((void*)p), NULL) : NULL, p = NULL)
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif // __cplusplus || c_plusplus
 
 #endif /* __YDEFS_H__ */

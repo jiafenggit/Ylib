@@ -2,6 +2,8 @@
  * *                       YSTR                           *
  * ******************************************************** */
 
+#include "ylib.h"
+
 /* *********** PRIVATE DEFINITIONS AND MACROS ************ */
 /*! @define _YSTR_DEFAULT_SIZE Default size for ystrings. */
 #define _YSTR_DEFAULT_SIZE	4096
@@ -10,12 +12,14 @@
 #define _YSTR_100MB	(100 * MB)
 
 /*! @define _YSTR_ROUNDSIZE Round a size to 8KB bound. */
-#define _YSTR_ROUNDSIZE(s)	((s) + ((s) % 8192))
+#define _YSTR_ROUNDSIZE(s)	((s) == _YSTR_DEFAULT_SIZE ? (s) : ((s) + ((s) % 8192)))
 
 /*! @define _YSTR_SIZE Compute the size of a new ystring's buffer. */
 #define _YSTR_SIZE(s)	_YSTR_ROUNDSIZE(!(s) ? _YSTR_DEFAULT_SIZE : \
-			                ((s) > GB ? ((s) + GB) : \
-			                 ((s) > _YSTR_100MB ? ((s) + _YSTR_100MB) : ((s) * 2))))
+			                (s) > GB ? ((s) + GB) : \
+			                (s) > _YSTR_100MB ? ((s) + _YSTR_100MB) : \
+			                (s) < _YSTR_DEFAULT_SIZE ? _YSTR_DEFAULT_SIZE : \
+			                ((s) * 2))
 
 /*! @define _YSTR_HEAD Get a pointer to a ystring's header, from a pointer to the ystring's data. */
 #define _YSTR_HEAD(p)	((ystr_head_t*)((p) - sizeof(ystr_head_t)))
@@ -35,44 +39,9 @@ struct ystr_head_s {
 /*! @typedef ystr_head_t See ystr_head_s structure. */
 typedef struct ystr_head_s ystr_head_t;
 
-/* ********** PRIVATE FUNCTION DECLARATIONS ************* */
-static ystr_t _ys_new(const char *s);
-static void _ys_free(ystr_t *s);
-static void _ys_trunc(ystr_t s);
-static bool _ys_setsz(ystr_t *s, size_t sz);
-static size_t _ys_len(const ystr_t s);
-static bool _ys_append(ystr_t *dest, const char *src);
-static bool _ys_prepend(ystr_t *dest, const char *src);
-static bool _ys_nappend(ystr_t *dest, const char *src, size_t n);
-static bool _ys_nprepend(ystr_t *dest, const char *src, size_t n);
-static ystr_t _ys_dup(const ystr_t s);
-static char *_ys_string(const ystr_t s);
-static ystr_t _ys_concat(const char *s1, const char *s2);
-static void _ys_ltrim(ystr_t s);
-static void _ys_rtrim(ystr_t s);
-static void _ys_trim(ystr_t s);
-static char _ys_lshift(ystr_t s);
-static char _ys_rshift(ystr_t s);
-static bool _ys_putc(ystr_t *s, char c);
-static bool _ys_addc(ystr_t *s, char c);
-static void _ys_upcase(char *s);
-static void _ys_lowcase(char *s);
-static bool _ys_printf(ystr_t *s, char *format, ...);
-static bool _ys_vprintf(ystr_t *s, char *format, va_list args);
-static ystr_t _ys_str2hexa(const char *str);
-static ystr_t _ys_subs(const char *orig, const char *from, const char *to);
-static ystr_t _ys_casesubs(const char *orig, const char *from, const char *to);
-static ystr_t _str2xmlentity(char *str);
-static ystr_t _xmlentity2str(char *str);
+/* ********** FUNCTIONS ************* */
 
-/*!
- * @function	_ys_new
- *		Create a new ystring.
- * @param	s	Original string that will be copied in the ystring.
- *			Could be NULL to create an empty (but allocated) ystring.
- * @return	A pointer to the created ystring.
- */
-static ystr_t _ys_new(const char *s) {
+ystr_t ys_new(const char *s) {
 	char *res;
 	ystr_head_t *y;
 	size_t strsz, totalsz;
@@ -81,7 +50,7 @@ static ystr_t _ys_new(const char *s) {
 	strsz = !s ? 0 : strlen(s);
 	totalsz = _YSTR_SIZE(strsz + 1);
 	// allocate memory
-	if (!(res = (char*)_ymalloc(totalsz + sizeof(ystr_head_t))))
+	if (!(res = (char*)ymalloc(totalsz + sizeof(ystr_head_t))))
 		return (NULL);
 	// set pointers
 	y = (ystr_head_t*)res;
@@ -96,26 +65,18 @@ static ystr_t _ys_new(const char *s) {
 		strcpy(res, s);
 	return ((ystr_t)res);
 }
-/*!
- * @function	_ys_free
- *		Delete an existing ystring.
- * @param	s	A pointer to the ystring.
- */
-static void _ys_free(ystr_t *s) {
+
+void ys_free(ystr_t *s) {
 	ystr_head_t *y;
 
 	if (!s || !*s)
 		return;
 	y = _YSTR_HEAD(*s);
-	_yfree(y);
+	yfree(y);
 	*s = NULL;
 }
-/*!
- * @function	_ys_trunc
- *		Truncate an existing ystring. The allocated memory doesn't change.
- * @param	s	The ystring.
- */
-static void _ys_trunc(ystr_t s) {
+
+void ys_trunc(ystr_t s) {
 	ystr_head_t *y;
 
 	if (!s)
@@ -124,14 +85,8 @@ static void _ys_trunc(ystr_t s) {
 	*s = '\0';
 	y->used = 0;
 }
-/*!
- * @function	_ys_setsz
- *		Set the minimum size of a ystring.
- * @param	s	A pointer to the ystring.
- * @param	sz	The minimum size for this ystring.
- * @return	false if an error occurs, true otherwise.
- */
-static bool _ys_setsz(ystr_t *s, size_t sz) {
+
+bool ys_setsz(ystr_t *s, size_t sz) {
 	ystr_head_t *y, *ny;
 	size_t totalsz;
 	char *ns;
@@ -142,36 +97,25 @@ static bool _ys_setsz(ystr_t *s, size_t sz) {
 	if (sz <= y->total)
 		return (true);
 	totalsz = _YSTR_SIZE(sz + 1);
-	if (!(ns = (char*)_ymalloc(totalsz + sizeof(ystr_head_t))))
+	if (!(ns = (char*)ymalloc(totalsz + sizeof(ystr_head_t))))
 		return (false);
 	ny = (ystr_head_t*)ns;
 	ns += sizeof(ystr_head_t);
 	ny->total = totalsz;
 	ny->used = y->used;
 	memcpy(ns, s, y->used + 1);
-	_yfree(y);
+	yfree(y);
 	*s = ns;
 	return (true);
 }
-/*!
- * @function	_ys_len
- *		Return the length of a ystring.
- * @param	s	The ystring.
- * @return	The ystring's length.
- */
-static size_t _ys_len(const ystr_t s) {
+
+size_t ys_len(const ystr_t s) {
 	if (!s)
 		return (0);
 	return (_YSTR_HEAD(s)->used);
 }
-/*!
- * @function	_ys_append
- *		Concatenate a character string at the end of a ystring.
- * @param	dest	A pointer to the ystring.
- * @param	src	A pointer to the character string.
- * @return	false if an error occurs, true otherwise.
- */
-static bool _ys_append(ystr_t *dest, const char *src) {
+
+bool ys_append(ystr_t *dest, const char *src) {
 	size_t srcsz, strsz, totalsz;
 	ystr_head_t *y, *ny;
 	char *ns;
@@ -179,7 +123,7 @@ static bool _ys_append(ystr_t *dest, const char *src) {
 	if (!src || !(srcsz = strlen(src)))
 		return (true);
 	if (!*dest) {
-		*dest = _ys_new(src);
+		*dest = ys_new(src);
 		return (true);
 	}
 	y = _YSTR_HEAD(*dest);
@@ -190,7 +134,7 @@ static bool _ys_append(ystr_t *dest, const char *src) {
 	}
 	strsz = y->used + srcsz;
 	totalsz = _YSTR_SIZE(strsz + 1);
-	if (!(ns = (char*)_ymalloc(totalsz + sizeof(ystr_head_t))))
+	if (!(ns = (char*)ymalloc(totalsz + sizeof(ystr_head_t))))
 		return (0);
 	ny = (ystr_head_t*)ns;
 	ns += sizeof(ystr_head_t);
@@ -198,18 +142,12 @@ static bool _ys_append(ystr_t *dest, const char *src) {
 	ny->used = strsz;
 	memcpy(ns, *dest, y->used);
 	memcpy(ns + y->used, src, srcsz + 1);
-	_yfree(y);
+	yfree(y);
 	*dest = ns;
 	return (true);
 }
-/*!
- * @function	_ys_prepend
- *		Concatenate a character string at the begining of a ystring.
- * @param	dest	A pointer to the ystring.
- * @param	src	A pointer to the character string.
- * @return	false if an error occurs, true otherwise.
- */
-static bool _ys_prepend(ystr_t *dest, const char *src) {
+
+bool ys_prepend(ystr_t *dest, const char *src) {
 	size_t srcsz, strsz, totalsz;
 	ystr_head_t *y, *ny;
 	char *ns;
@@ -217,7 +155,7 @@ static bool _ys_prepend(ystr_t *dest, const char *src) {
 	if (!src || !(srcsz = strlen(src)))
 		return (true);
 	if (!*dest) {
-		*dest = _ys_new(src);
+		*dest = ys_new(src);
 		return (true);
 	}
 	y = _YSTR_HEAD(*dest);
@@ -234,7 +172,7 @@ static bool _ys_prepend(ystr_t *dest, const char *src) {
 	}
 	strsz = y->used + srcsz;
 	totalsz = _YSTR_SIZE(strsz);
-	if (!(ns = (char*)_ymalloc(totalsz + sizeof(ystr_head_t))))
+	if (!(ns = (char*)ymalloc(totalsz + sizeof(ystr_head_t))))
 		return (false);
 	ny = (ystr_head_t*)ns;
 	ns += sizeof(ystr_head_t);
@@ -242,20 +180,12 @@ static bool _ys_prepend(ystr_t *dest, const char *src) {
 	ny->used = strsz;
 	memcpy(ns, src, srcsz);
 	memcpy(ns + srcsz, *dest, y->used + 1);
-	_yfree(y);
+	yfree(y);
 	*dest = ns;
 	return (true);
 }
-/*!
- * @function	_ys_nappend
- *		Concatenate a given number of characters from a
- *		character string to an ystring.
- * @param	dest	A pointer to the ystring.
- * @param	src	A pointer to the character string.
- * @param	n	The number of characters to copy.
- * @return	false if an error occurs, true otherwise.
- */
-static bool _ys_nappend(ystr_t *dest, const char *src, size_t n) {
+
+bool ys_nappend(ystr_t *dest, const char *src, size_t n) {
 	size_t strsz, totalsz;
 	ystr_head_t *y, *ny;
 	char *ns;
@@ -263,7 +193,7 @@ static bool _ys_nappend(ystr_t *dest, const char *src, size_t n) {
 	if (!src || !n)
 		return (true);
 	if (!*dest) {
-		*dest = _ys_new(src);
+		*dest = ys_new(src);
 		return (true);
 	}
 	y = _YSTR_HEAD(*dest);
@@ -275,7 +205,7 @@ static bool _ys_nappend(ystr_t *dest, const char *src, size_t n) {
 	}
 	strsz = y->used + n;
 	totalsz = _YSTR_SIZE(strsz);
-	if (!(ns = (char*)_ymalloc(totalsz + sizeof(ystr_head_t))))
+	if (!(ns = (char*)ymalloc(totalsz + sizeof(ystr_head_t))))
 		return (false);
 	ny = (ystr_head_t*)ns;
 	ns += sizeof(ystr_head_t);
@@ -284,20 +214,12 @@ static bool _ys_nappend(ystr_t *dest, const char *src, size_t n) {
 	strcpy(ns, *dest);
 	strncpy(ns + y->used, src, n);
 	ns[ny->used] = '\0';
-	_yfree(y);
+	yfree(y);
 	*dest = ns;
 	return (true);
 }
-/*!
- * @function	_ys_nprepend
- *		Concatenate a given number of characters from a
- *		character string at thbegining of an ystring.
- * @param	dest	A pointer to the ystring.
- * @param	src	A pointer to the character string.
- * @param	n	The number of characters to copy.
- * @return	0 if an error occurs, 1 otherwise.
- */
-static bool _ys_nprepend(ystr_t *dest, const char *src, size_t n) {
+
+bool ys_nprepend(ystr_t *dest, const char *src, size_t n) {
 	size_t strsz, totalsz;
 	ystr_head_t *y, *ny;
 	char *ns;
@@ -305,7 +227,7 @@ static bool _ys_nprepend(ystr_t *dest, const char *src, size_t n) {
 	if (!src || !n)
 		return (true);
 	if (!*dest) {
-		*dest = _ys_new(src);
+		*dest = ys_new(src);
 		return (true);
 	}
 	n = (strlen(src) < n) ? strlen(src) : n;
@@ -323,7 +245,7 @@ static bool _ys_nprepend(ystr_t *dest, const char *src, size_t n) {
 	}
 	strsz = y->used + n;
 	totalsz = _YSTR_SIZE(strsz);
-	if (!(ns = (char*)_ymalloc(totalsz + sizeof(ystr_head_t))))
+	if (!(ns = (char*)ymalloc(totalsz + sizeof(ystr_head_t))))
 		return (false);
 	ny = (ystr_head_t*)ns;
 	ns += sizeof(ystr_head_t);
@@ -331,24 +253,19 @@ static bool _ys_nprepend(ystr_t *dest, const char *src, size_t n) {
 	ny->used = strsz;
 	memcpy(ns, src, n);
 	memcpy(ns + n, *dest, y->used + 1);
-	_yfree(y);
+	yfree(y);
 	*dest = ns;
 	return (0);
 }
-/*!
- * @function	_ys_dup
- *		Duplicate a ystring.
- * @param	s	The ystring.
- * @return	The new ystring.
- */
-static ystr_t _ys_dup(const ystr_t s) {
+
+ystr_t ys_dup(const ystr_t s) {
 	ystr_head_t *y, *ny;
 	char *ns;
 
 	if (!s)
-		return (_ys_new(NULL));
+		return (ys_new(NULL));
 	y = _YSTR_HEAD(s);
-	if (!(ns = (char*)_ymalloc(y->total + sizeof(ystr_head_t))))
+	if (!(ns = (char*)ymalloc(y->total + sizeof(ystr_head_t))))
 		return (ns);
 	ny = (ystr_head_t*)ns;
 	ns += sizeof(ystr_head_t);
@@ -358,44 +275,28 @@ static ystr_t _ys_dup(const ystr_t s) {
 	ns[y->used] = '\0';
 	return ((ystr_t)ns);
 }
-/*!
- * @function	_ys_string
- *		Create a copy of a ystring. The copy is a simple
- *		(char*) string, not bufferized.
- * @param	s	The ystring.
- * @return	A pointer to the created string, or NULL if an error occurs.
- */
-static char *_ys_string(const ystr_t s) {
+
+char *ys_string(const ystr_t s) {
 	ystr_head_t *y;
 	char *res;
 
 	if (!s)
 		return (NULL);
 	y = _YSTR_HEAD(s);
-	if (!(res = (char*)_ymalloc(y->used + 1)))
+	if (!(res = (char*)ymalloc(y->used + 1)))
 		return (NULL);
 	return (memcpy(res, s, y->used + 1));
 }
-/*!
- * @function	_ys_concat
- *		Concatenate 2 character strings to create a ystring.
- * @param	s1	A pointer to the first character string.
- * @param	s2	A pointer to the second character string.
- * @return	A pointer to the new ystring.
- */
-static ystr_t _ys_concat(const char *s1, const char *s2) {
+
+ystr_t ys_concat(const char *s1, const char *s2) {
 	char *ns;
 
-	ns = _ys_new(s1);
-	_ys_append(&ns, s2);
+	ns = ys_new(s1);
+	ys_append(&ns, s2);
 	return ((ystr_t)ns);
 }
-/*!
- * @function	_ys_ltrim
- *		Remove all spaces at the beginning of a ystring.
- * @param	s	The ystring.
- */
-static void _ys_ltrim(ystr_t s) {
+
+void ys_ltrim(ystr_t s) {
 	ystr_head_t *y;
 	char *pt;
 	size_t offset = 0;
@@ -411,12 +312,8 @@ static void _ys_ltrim(ystr_t s) {
 	y->used -= offset;
 	memmove(s, s + offset, y->used + 1);
 }
-/*!
- * @function	_ys_rtrim
- *		Remove all spaces at the end of a ystring.
- * @param	s	The ystring.
- */
-static void _ys_rtrim(ystr_t s) {
+
+void ys_rtrim(ystr_t s) {
 	ystr_head_t *y;
 	char *pt;
 	size_t initsz;
@@ -434,22 +331,13 @@ static void _ys_rtrim(ystr_t s) {
 	if (initsz != y->used)
 		*(pt + 1) = '\0';
 }
-/*!
- * @function	_ys_trim
- *		Remove all spaces at the beginning and the end of a ystring.
- * @param	s	The ytring.
- */
-static void _ys_trim(ystr_t s) {
-	_ys_ltrim(s);
-	_ys_rtrim(s);
+
+void ys_trim(ystr_t s) {
+	ys_ltrim(s);
+	ys_rtrim(s);
 }
-/*!
- * @function	_ys_lshift
- *		Remove the first character of a ystring.
- * @param	s	The ystring.
- * @return	The removed character.
- */
-static char _ys_lshift(ystr_t s) {
+
+char ys_lshift(ystr_t s) {
 	char c;
 
 	if (!s || !*s)
@@ -457,16 +345,11 @@ static char _ys_lshift(ystr_t s) {
 	c = *s;
 	// write a space onto the first character, and then call ltrim
 	*s = ' ';
-	_ys_ltrim(s);
+	ys_ltrim(s);
 	return (c);
 }
-/*!
- * @function	_ys_rshift
- *		Remove the last character of a ystring.
- * @param	s	The ystring.
- * @return	The removed character.
- */
-static char _ys_rshift(ystr_t s) {
+
+char ys_rshift(ystr_t s) {
 	ystr_head_t *y;
 	char c;
 
@@ -478,14 +361,8 @@ static char _ys_rshift(ystr_t s) {
 	y->used--;
 	return (c);
 }
-/*!
- * @function	_ys_putc
- *		Add a character at the beginning of a ystring.
- * @param	s	A pointer to the ystring.
- * @param	c	The character to add.
- * @return	false if an error occurs, true otherwise.
- */
-static bool _ys_putc(ystr_t *s, char c) {
+
+bool ys_putc(ystr_t *s, char c) {
 	ystr_head_t *y, *ny;
 	char *pt1, *pt2, *ns;
 	size_t totalsz;
@@ -495,7 +372,7 @@ static bool _ys_putc(ystr_t *s, char c) {
 	if (!*s) {
 		char tc[2] = {'\0', '\0'};
 		tc[0] = c;
-		*s = _ys_new(tc);
+		*s = ys_new(tc);
 		return (true);
 	}
 	y = _YSTR_HEAD(*s);
@@ -508,7 +385,7 @@ static bool _ys_putc(ystr_t *s, char c) {
 		return (true);
 	}
 	totalsz = _YSTR_SIZE(y->used + 2);
-	if (!(ns = (char*)_ymalloc(totalsz + sizeof(ystr_head_t))))
+	if (!(ns = (char*)ymalloc(totalsz + sizeof(ystr_head_t))))
 		return (false);
 	ny = (ystr_head_t*)ns;
 	ns += sizeof(ystr_head_t);
@@ -516,30 +393,19 @@ static bool _ys_putc(ystr_t *s, char c) {
 	ny->used = y->used + 1;
 	*ns = c;
 	memcpy(ns + 1, *s, y->used + 1);
-	_yfree(y);
+	yfree(y);
 	*s = ns;
 	return (true);
 }
-/*!
- * @function	_ys_addc
- *		Add a character at the end of a ystring.
- * @param	s	A pointer to the ystring.
- * @param	c	The character to add.
- * @return	false if an error occurs, true otherwise.
- */
-static bool _ys_addc(ystr_t *s, char c) {
+
+bool ys_addc(ystr_t *s, char c) {
 	char tc[2] = {'\0', '\0'};
 
 	tc[0] = c;
-	return (_ys_append(s, tc));
+	return (ys_append(s, tc));
 }
-/*!
- * @function	_ys_upcase
- *		Convert all characters of a character string to upper
- *		case.
- * @param	s	A pointer to the ystring.
- */
-static void _ys_upcase(char *s) {
+
+void ys_upcase(char *s) {
 	if (!s)
 		return;
 	for (; *s; ++s) {
@@ -547,13 +413,8 @@ static void _ys_upcase(char *s) {
 			*s = 'A' + (*s - 'a');
 	}
 }
-/*!
- * @function	_ys_lowcase
- *		Convert all characters of a character string to lower
- *		case.
- * @param	s	A pointer to the ystring.
- */
-static void _ys_lowcase(char *s) {
+
+void ys_lowcase(char *s) {
 	if (!s)
 		return;
 	for (; *s; ++s) {
@@ -561,178 +422,130 @@ static void _ys_lowcase(char *s) {
 			*s = 'a' + (*s - 'A');
 	}
 }
-/*!
- * @function	_ys_printf
- *		Write inside a ystring using formatted arguments. The
- *		ystring must be long enough (use _ys_setsz() before),
- *		otherwise the resulting string will be truncate.
- * @param	s	A pointer to the ystring.
- * @param	format	Format string (like in printf()).
- * @param	...	Variable argument list.
- * @return	false if an error occurs, true otherwise.
- */
-static bool _ys_printf(ystr_t *s, char *format, ...) {
+
+bool ys_printf(ystr_t *s, char *format, ...) {
 	va_list p_list;
 	bool res;
 
 	va_start(p_list, format);
-	res = _ys_vprintf(s, format, p_list);
+	res = ys_vprintf(s, format, p_list);
 	va_end(p_list);
 	return (res);
 }
-/*!
- * @function	_ys_vprintf
- *		Same as _ys_printf(), but the variable arguments are given
- *		trough a va_list.
- * @param	s	A pointer to the ystring.
- * @param	format	Format string (like in printf()).
- * @param	args	Variable argument list.
- * @return	false if an error occurs, true otherwise.
- */
-static bool _ys_vprintf(ystr_t *s, char *format, va_list args) {
+
+bool ys_vprintf(ystr_t *s, char *format, va_list args) {
 	ystr_head_t *y;
 	int i;
 
 	if (!s || !*s || !format)
 		return (false);
 	y = _YSTR_HEAD(*s);
-	if ((i = vsnprintf(*s, y->total, format, args)) == -1)
+	if ((i = vsnprintf(*s, y->total, format, args)) == -1) {
 		**s = '\0';
+	}
 	y->used = (i == -1) ? 0 : i;
 	return ((i == -1) ? false : true);
 }
-/*!
- * @function	_ys_str2hexa
- *		Convert a character string to the hexadecimal representation
- *		of this string.
- * @param	str	Character string that must be converted.
- * @return	A ystring that contains the converted string, or NULL.
- */
-static ystr_t _ys_str2hexa(const char *str) {
+
+ystr_t ys_str2hexa(const char *str) {
 	char h[3] = {'\0', '\0', '\0'};
 	const char *pt;
 	ystr_t ys;
 
-	if (!str || !(ys = _ys_new(NULL)))
+	if (!str || !(ys = ys_new(NULL)))
 		return (NULL);
 	for (pt = str; *pt; ++pt) {
 		snprintf(h, 3, "%x", *pt);
-		_ys_append(&ys, h);
+		ys_append(&ys, h);
 	}
 	return (ys);
 }
-/*!
- * @function    _ys_subs
- *              Substitute a string by another, inside a charater string.
- * @param       orig    The original character string.
- * @param       from    The string to substitute.
- * @param       to      The substitution string.
- * @return      A ystring that contains the substituted string, or NULL.
- */
-static ystr_t _ys_subs(const char *orig, const char *from, const char *to) {
+
+ystr_t ys_subs(const char *orig, const char *from, const char *to) {
 	ystr_t ys;
 	const char *pt;
 	size_t from_len;
 
-	if (!orig || !(ys = _ys_new(NULL)))
+	if (!orig || !(ys = ys_new(NULL)))
 		return (NULL);
 	from_len = (from) ? strlen(from) : 0;
 	for (pt = orig; *pt; ++pt) {
 		if (from_len && !strncmp(from, pt, from_len)) {
-			_ys_append(&ys, to);
+			ys_append(&ys, to);
 			pt = pt + from_len - 1;
 		} else
-			_ys_addc(&ys, *pt);
+			ys_addc(&ys, *pt);
 	}
 	return (ys);
 }
-/*!
- * @function    _ys_casesubs
- *              Substitute a string by another, in a case-insensitive manner.
- * @param       orig    The original character string.
- * @param       from    The string to substitute.
- * @param       to      The substitution string.
- * @return      A ystring that contains the substituted string, or NULL.
- */
-static ystr_t _ys_casesubs(const char *orig, const char *from, const char *to) {
+
+ystr_t ys_casesubs(const char *orig, const char *from, const char *to) {
 	ystr_t ys;
 	const char *pt;
 	size_t from_len;
 
-	if (!orig || !(ys = _ys_new(NULL)))
+	if (!orig || !(ys = ys_new(NULL)))
 		return (NULL);
 	from_len = (from) ? strlen(from) : 0;
 	for (pt = orig; *pt; ++pt) {
 		if (from_len && !strncasecmp(from, pt, from_len)) {
-			_ys_append(&ys, to);
+			ys_append(&ys, to);
 			pt = pt + from_len - 1;
 		} else
-			_ys_addc(&ys, *pt);
+			ys_addc(&ys, *pt);
 	}
 	return (ys);
 }
-/*!
- * @function	_str2xmlentity
- *		Convert a character string into a ystring where each XML special
- *		characters are replaced by their corresponding XML entities.
- * @param	str	Character string that must be converted.
- * @return	The converted string, or NULL.
- */
-static ystr_t _str2xmlentity(char *str) {
+
+ystr_t str2xmlentity(char *str) {
 	char *pt;
 	ystr_t res;
 
-	if (!str || !(res = _ys_new(NULL)))
+	if (!str || !(res = ys_new(NULL)))
 		return (NULL);
 	for (pt = str; *pt; ++pt) {
 		if (*pt == LT)
-			_ys_append(&res, "&lt;");
+			ys_append(&res, "&lt;");
 		else if (*pt == GT)
-			_ys_append(&res, "&gt;");
+			ys_append(&res, "&gt;");
 		else if (*pt == DQUOTE)
-			_ys_append(&res, "&quot;");
+			ys_append(&res, "&quot;");
 		else if (*pt == QUOTE)
-			_ys_append(&res, "&apos;");
+			ys_append(&res, "&apos;");
 		else if (*pt == AMP)
-			_ys_append(&res, "&amp;");
+			ys_append(&res, "&amp;");
 		else
-			_ys_addc(&res, *pt);
+			ys_addc(&res, *pt);
 	}
 	return (res);
 }
-/*!
- * @function	_xmlentity2str
- *		Convert a string into a ystring where XML entities are replaced by
- *		their XML special characters.
- * @param	str	The XML encoded character string.
- * @return	The unconverted string, or NULL.
- */
-static ystr_t _xmlentity2str(char *str) {
+
+ystr_t xmlentity2str(char *str) {
 	ystr_t res;
 	char *pt, *pt2;
 	int i;
 	
-	if (!str || !(res = _ys_new("")))
+	if (!str || !(res = ys_new("")))
 		return (NULL);
 	for (pt = str; *pt; pt += i) {
 		if (*pt != AMP) {
-			_ys_addc(&res, *pt);
+			ys_addc(&res, *pt);
 			i = 1;
 		} else if (!strncmp(pt, "&amp;", (i = strlen("&amp;"))))
-			_ys_addc(&res, AMP);
+			ys_addc(&res, AMP);
 		else if (!strncmp(pt, "&lt;", (i = strlen("&lt;"))))
-			_ys_addc(&res, LT);
+			ys_addc(&res, LT);
 		else if (!strncmp(pt, "&gt;", (i = strlen("&gt;"))))
-			_ys_addc(&res, GT);
+			ys_addc(&res, GT);
 		else if (!strncmp(pt, "&quot;", (i = strlen("&quot;"))))
-			_ys_addc(&res, DQUOTE);
+			ys_addc(&res, DQUOTE);
 		else if (!strncmp(pt, "&apos;", (i = strlen("&apos;"))))
-			_ys_addc(&res, QUOTE);
+			ys_addc(&res, QUOTE);
 		else if (*(pt + 1) == HASH && (pt2 = strchr(pt + 2, ';'))) {
-			_ys_addc(&res, atoi(pt + 2));
+			ys_addc(&res, atoi(pt + 2));
 			i = (pt2 - pt) + 1;
 		} else {
-			_ys_addc(&res, *pt);
+			ys_addc(&res, *pt);
 			i = 1;
 		}
 	}
