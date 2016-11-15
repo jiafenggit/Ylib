@@ -35,7 +35,7 @@ void ylist_rewind(ylist_t *list) {
 }
 
 /* Destroy a list and all its elements. */
-bool ylist_delete(ylist_t *list, ylist_func_t delete_function, void *user_data) {
+bool ylist_free(ylist_t *list, ylist_func_t delete_function, void *user_data) {
 	ylist_elem_t *next_elem;
 	bool status = true;
 

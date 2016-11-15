@@ -58,13 +58,15 @@ LDFLAGS = -shared -Wl,-soname,$(SONAME)
 
 $(SONAME): $(OBJS) $(SRC)
 	$(CC) $(OBJS) $(LDFLAGS) -o $(SONAME)
+	if [ ! -d ../lib/ ]; then mkdir ../lib; fi
 	cp $(SONAME) ../lib/
+	if [ ! -d ../include ]; then mkdir ../include; fi
 	cp $(INCLUDES) ../include/
 
 clean:
 	$(RM) $(OBJS) $(SONAME) *~ test
 	$(RM) ../lib/$(SONAME)
-	cd ../include ; $(RM) $(INCLUDES)
+	if [ -d ../include ]; then cd ../include ; $(RM) $(INCLUDES); fi
 
 all: clean $(SONAME) test
 

@@ -4,6 +4,7 @@
 
 #include "ymem.h"
 
+/* Allocate memory. */
 void *ymalloc(size_t size) {
 #ifdef USE_BOEHM_GC
 	return (GC_MALLOC(size));
@@ -12,6 +13,7 @@ void *ymalloc(size_t size) {
 #endif
 }
 
+/* Alloc chunks of memory. */
 void *ycalloc(size_t nbr, size_t size) {
 #ifdef USE_BOEHM_GC
 	return (GC_MALLOC(nbr * size));
@@ -20,6 +22,7 @@ void *ycalloc(size_t nbr, size_t size) {
 #endif
 }
 
+/* Freed memory. */
 void *yfree(void *ptr) {
 	if (!ptr)
 		return (NULL);

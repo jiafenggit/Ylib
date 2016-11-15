@@ -17,7 +17,7 @@ extern "C" {
 #include <stdlib.h>
 
 /*!
- * @function	_ymalloc
+ * @function	ymalloc
  *		Allocate memory.
  * @param	size	The size of the memory space that must be allocated.
  * @return	A pointer to the allocated memory.
@@ -25,7 +25,7 @@ extern "C" {
 void *ymalloc(size_t size);
 
 /*!
- * @function	_ycalloc
+ * @function	ycalloc
  *		Alloc chunks of memory.
  * @param	nbr	Number of chunks.
  * @param	size	Size of one chunk.
@@ -34,7 +34,7 @@ void *ymalloc(size_t size);
 void *ycalloc(size_t nbr, size_t size);
 
 /*!
- * @function	_yfree
+ * @function	yfree
  *		Freed memory.
  * @param	ptr	Pointer to the allocated zone.
  * @return	NULL

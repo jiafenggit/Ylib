@@ -10,16 +10,10 @@
  *		<p /><b>How to use the SAX API ?</b><br />
  *		First of all, you must create a SAX parser:
  *		<pre>ysax_t *sax = ysax_new(data);</pre>
- *		Where <i>data</i> is a pointer to data that handlers should use to
+ *		Where <tt>data</tt> is a pointer to private data that handlers could use to
  *		do there jobs.<p />
- *		<pre>ysax_t *sax = ysax_new(filename, stream, mem, data);</pre>
- *		Where <i>filename</i> is the name of the XML file to parse, <i>stream</i>
- *		is a pointer to a stream used if <i>filename</i> is set to NULL, and <i>mem</i>
- *		is a pointer to a character string (which contains XML data) used if 
- *		<i>filename</i> and <i>stream</i> are set to NULL. <i>data</i> is a pointer
- *		to data that handlers should use to do there jobs.<p />
- *		After, you set the handlers, with ysax_set_tag_hdlr(),
- *		ysax_set_inside_text_hdlr(), ...<p />
+ *		After, you set the handlers, with <tt>ysax_set_tag_hdlr()</tt>,
+ *		<tt>ysax_set_inside_text_hdlr()</tt>, ...<p />
  *		<ul>
  *		<li>The handler for open tags must have this prototype:
  *		<pre>void func(ysax_t *sax, char *name, yvect_t attrs);</pre>
@@ -33,42 +27,55 @@
  *		<ul><li>A pointer to the parser</li>
  *		<li>A string which contains the tag name</li>
  *		</ul><p /></li>
- *		<li>The handler for inside text is call when some text is finded between an open 
+ *		<li>The handler for inside text is call when some text is found between an open 
  *		and a close tag; it must have this prototype:
  *		<pre>void func(ysax_t *sax, char *text);</pre>
  *		<ul><li>A pointer to the parser</li>
- *		<li>A string finded between an open and a close tag</li>
+ *		<li>A string found between an open and a close tag</li>
  *		</ul><p /></li>
- *		<li>The comment handler is call when an XML comment is finded (text between 
+ *		<li>The comment handler is call when an XML comment is found (text between 
  *		"&lt;!--" and "--&gt;"); it must have this prototype:
  *		<pre>void func(ysax_t *sax, char *comment);</pre>
  *		<ul><li>A pointer to the parser</li>
- *		<li>A string which contains the finded comment</li>
+ *		<li>A string which contains the found comment</li>
  *		</ul><p /></li>
  *		<li>The processing instruction handler is call when a processing instruction is 
- *		finded (text between "&lt;?" and "?&gt;"); it must have this prototype:
+ *		found (text between "&lt;?" and "?&gt;"); it must have this prototype:
  *		<pre>void func(ysax_t *sax, char *target, char *content);</pre>
  *		<ul><li>A pointer to the parser</li>
  *		<li>A string which contains the target of the processing instruction</li>
  *		<li>A string which contains the processing instruction itself</li>
  *		</ul><p /></li>
- *		<li>The CDATA handler is call when a CDATA instruction is finded (text between
+ *		<li>The CDATA handler is call when a CDATA instruction is found (text between
  *		"&lt;![CDATA[[" and "]]&gt;"); it must have this prototype:
  *		<pre>void  func(ysax_t *sax, char *content);</pre>
  *		<ul><li>A pointer to the parser</li>
  *		<li>A string which contains the CDATA content</li>
  *		</ul><p /></li>
  *		</ul>
- *		To launch the parser execution, you just have to call:
- *		<pre>ysax_parse(sax);</pre>
- *		This function return YENOERR if all is OK. It read the XML file, and call
+ *		⚠ These handlers must freed the data given to them as parameters.
+ *		<p/>
+ *		Then you have to tell the parser what it will have to parse:
+ *		<ul>
+ *		<li><pre>ysax_read_file(sax, filename);</pre>
+ *		Where <tt>filename</tt> contains the path to an XML file.</li>
+ *		<li><pre>ysax_read_stream(sax, stream);</pre>
+ *		Where <tt>stream</tt> is a pointer to an opened FILE.</li>
+ *		<li><pre>ysax_read_memory(sax, str);</pre>
+ *		Where <tt>str</tt> is a pointer to a character string that contains an XML flow.</li>
+ *		<li><pre>ysax_read_handler(sax, getc_hdlr, ungetc_hdlr);</pre>
+ *		Where <tt>getc_hdlr</tt> is a pointer to a function that returns a char (from any
+ *		source you want) and <tt>ungetc_hdlr</tt> is a pointer to a function that takes
+ *		an char and put it back on its source.</li>
+ *		</ul>
+ *		These functions return YENOERR if all is OK. They read the XML file/stream, and call
  *		the handlers.<p />
  *		If an error is detected in a handler, you could stop the parsing be calling
- *		this function (and then the ysax_parse() function will return an YEL2HLT
+ *		this function (and then the ysax_read_*() function will return an YEL2HLT
  *		error):
  *		<pre>ysax_stop(sax);</pre>
  *		<p />When you have finish, you could free the memory allocated by the parser:
- *		<pre>ysax_del(sax);</pre>
+ *		<pre>ysax_free(sax);</pre>
  * @version	1.0.0 Sep 14 2002
  * @author	Amaury Bouchard <amaury@amaury.net>
  */
@@ -115,13 +122,13 @@ typedef struct ysax_attr_s ysax_attr_t;
  * @struct	ysax_s
  *		Object for SAX XML parser.
  * @field	file			Stream of the XML file
- * @field	file_mode		Set to true if the file must be close.
+ * @field	must_cloes_stream	Set to true if the file must be closed.
  * @field	mem			Pointer to character string to parse.
  * @field	getc_hdlr		Function pointer to get data.
  * @field	ungetc_hdlr		Function pointer to unget data.
  * @field	xml_data		Pointer to data used by getc/ungetc handlers.
  * @field	parse_data		Pointer to some data (for handlers using).
- * @field	open_tag_hdlr		Function pointer to call when an open tag is finded.
+ * @field	open_tag_hdlr		Function pointer to call when an open tag is found.
  * @field	inside_text_hdlr	Function pointer for text inside tags.
  * @field	close_tag_hdlr		Function pointer for close tags.
  * @field	comment_hdlr		Function pointer for XML comments.
@@ -212,9 +219,9 @@ void ysax_free(ysax_t *sax);
  *		Set the open tag and close tag handlers of the Sax XML parser.
  * @param	sax		A pointer to the Sax parser.
  * @param	open_hdlr	Function pointer to the handler call when an
- *				open tag is finded.
+ *				open tag is found.
  * @param	close_hdlr	Function pointer to the handler call when a
- *				close tag is finded.
+ *				close tag is found.
  */
 void ysax_set_tag_hdlr(ysax_t *sax,
 		       void (*open_hdlr)(ysax_t*, char*, yvect_t),
@@ -225,40 +232,36 @@ void ysax_set_tag_hdlr(ysax_t *sax,
  *		Set the inside text handler of the Sax XML parser.
  * @param	sax	A pointer to the Sax parser.
  * @param	hdlr	Function pointer to the handler call when a character
- *			is finded between an open and a close tag.
+ *			is found between an open and a close tag.
  */
-void ysax_set_inside_text_hdlr(ysax_t *sax,
-			       void (*hdlr)(ysax_t*, char*));
+void ysax_set_inside_text_hdlr(ysax_t *sax, void (*hdlr)(ysax_t*, char*));
 
 /*!
  * @function	ysax_set_comment_hdlr
  *		Set the comment handler of a Sax XML parser.
  * @param	sax	A pointer to the Sax parser.
  * @param	hdlr	Function pointer to the handler call when a XML
- *			comment is finded.
+ *			comment is found.
  */
-void ysax_set_comment_hdlr(ysax_t *sax,
-			   void (*hdlr)(ysax_t*, char*));
+void ysax_set_comment_hdlr(ysax_t *sax, void (*hdlr)(ysax_t*, char*));
 
 /*!
  * @function	ysax_set_process_instr_hdlr
  *		Set the processing instruction of a Sax XML parser.
  * @param	sax	A pointer to the Sax parser.
  * @param	hdlr	Function pointer to the handler call when a
- *			processing instruciton is finded.
+ *			processing instruciton is found.
  */
-void ysax_set_process_instr_hdlr(ysax_t *sax,
-				 void (*hdlr)(ysax_t*, char*, char*));
+void ysax_set_process_instr_hdlr(ysax_t *sax, void (*hdlr)(ysax_t*, char*, char*));
 
 /*!
  * @function	ysax_set_cdata_hdlr
  *		Set the CDATA handler of a Sax XML parser.
  * @param	sax	A pointer to the Sax parser.
  * @param	hdlr	Function pointer to the handler call when a CDATA
- *			instruction is finded.
+ *			instruction is found.
  */
-void ysax_set_cdata_hdlr(ysax_t *sax,
-			 void (*hdlr)(ysax_t*, char*));
+void ysax_set_cdata_hdlr(ysax_t *sax, void (*hdlr)(ysax_t*, char*));
 
 /*!
  * @function	ysax_stop
