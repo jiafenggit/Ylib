@@ -68,14 +68,14 @@ void ylist_foreach(ylist_t *list, ylist_func_t func, void *user_data);
 void ylist_rewind(ylist_t *list);
 
 /**
- * @function	ylist_delete
+ * @function	ylist_free
  *		Destroy a list and all its elements.
  * @param	list		Pointer to the list.
  * @param	delete_function	Callback used to free the list elements.
  * @param	user_data	Pointer given to the delete function.
  * @return	true if the list was successfully deleted.
  */
-bool ylist_delete(ylist_t *list, ylist_func_t delete_function, void *user_data);
+bool ylist_free(ylist_t *list, ylist_func_t delete_function, void *user_data);
 
 /**
  * @function	ylist_add
