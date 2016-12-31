@@ -1,6 +1,8 @@
 #ifndef __YHASH_H__
 #define __YHASH_H__
 
+#include <stdint.h>
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif /* __cplusplus || c_plusplus */

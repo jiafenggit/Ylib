@@ -10,6 +10,8 @@
 #ifndef __YVECT_H__
 #define __YVECT_H__
 
+#include <stddef.h>
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif /* __cplusplus || c_plusplus */

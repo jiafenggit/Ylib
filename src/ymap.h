@@ -74,7 +74,7 @@ typedef struct ymap_s {
  *		Creates a new hash map.
  * @param	size		Initial size of the hash map.
  * @param	destroy_func	Pointer to the function called when an element is removed.
- * @param	destroy_data	Pointer to some suer data given to the destroy function.
+ * @param	destroy_data	Pointer to some user data given to the destroy function.
  * @return	The created hash map.
  */
 ymap_t *ymap_create(size_t size, ymap_function_t destroy_func, void *destroy_data);

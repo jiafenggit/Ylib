@@ -36,6 +36,23 @@ extern "C" {
 # endif
 #endif
 
+/**
+ * @define	UNUSED
+ *		Macro to define unused parameter in a function prototype, to avoid "missing parameter" warning.
+ * @link	http://stackoverflow.com/questions/7090998/portable-unused-parameter-macro-used-on-function-signature-for-c-and-c
+ */
+#ifndef UNUSED
+# if defined(__GNUC__)
+#  define UNUSED(x) UNUSED_ ## x __attribute__((unused))
+# elif defined(__LCLINT__)
+#  define UNUSED(x) /*@unused@*/ x
+# elif defined(__cplusplus)
+#  define UNUSED(x)
+# else
+#  define UNUSED(x) x
+# endif
+#endif
+
 /*!
  * @struct	ybin_s
  *		Structure used for binary data transmission.
