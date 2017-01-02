@@ -55,7 +55,8 @@ yvector_t *yvector_new(void);
 /**
  * @function	yvector_clear
  *		Clear a yvector from its content.
- *		The vector shouldn't be sued after that, or only after yvector_init.
+ *		The vector shouldn't be used after that, or only after a new call to
+ *		yvector_init().
  * @param	v		Pointer to the yvector.
  * @param	f		Pointer to a function that will be called to delete each
  *				element of the yvector. Could be NULL; otherwise, must
