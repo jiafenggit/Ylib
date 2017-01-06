@@ -1,8 +1,47 @@
 #include <stdio.h>
-#include "ylib.h"
-#include "yjson.h"
-#include "yvector.h"
+//#include "ylib.h"
+//#include "yjson.h"
+//#include "yvector.h"
+//#include "yarray.h"
+#include <unistd.h>
+#include "yerror.h"
 
+int main() {
+	printf("OK 1\n");
+	sleep(1);
+	yerr_t ye = YEBUSY;
+	printf("OK 2\n");
+	sleep(1);
+	int yy = (int)ye;
+	printf("OK 3\n");
+	sleep(1);
+	printf("OK '%d'\n", YESYNTAX);
+	return (0);
+}
+
+#if 0
+typedef struct s_s {
+	int i;
+	char c;
+} s_t;
+void func(size_t index, void *data, void *user_data) {
+	yarray_t *a = user_data;
+	s_t *d = data;
+	printf("%ld/%ld '%d' '%c'\n", index, a->count, d->i, d->c);
+}
+int main(int argc, char **argv) {
+	s_t data = {.i = 0, .c = 'a'};
+	yarray_t a;
+	yarray_init(&a, sizeof(s_t));
+	for (int i = 0; i < 10; ++i) {
+		data.i++;
+		data.c++;
+		yarray_push(&a, &data);
+	}
+	yarray_foreach(&a, func, &a);
+}
+#endif
+#if 0
 void func(size_t index, void *data, void *user_data) {
 	yvector_t *v = user_data;
 	printf("%ld/%ld: '%s'\n", index, v->count, (char*)data);
@@ -20,7 +59,7 @@ int main(int argc, char **argv) {
 	}
 	yvector_foreach(&v, func, &v);
 }
-
+#endif
 #if 0
 int main(int argc, char **argv) {
 	yjson_parser_t json;
@@ -48,7 +87,6 @@ int main(int argc, char **argv) {
 	yjson_print(&val);
 }
 #endif
-
 #if 0
 void show_attribute(size_t index, void *elem, void *data);
 

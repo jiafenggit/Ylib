@@ -10,6 +10,7 @@
 #pragma once
 
 #include <stddef.h>
+#include "yerror.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -100,22 +101,22 @@ yvector_t *yvector_duplicate(yvector_t *v);
 void yvector_truncate(yvector_t *v, void (*f)(void*, void*), void *user_data);
 
 /**
- * @function	yvector_set_size
+ * @function	yvector_resize
  *		Set the minimum size of a yvector.
  * @param	v	A pointer to the yvector.
  * @param	size	The minimum size for this yvector.
  *			Must be larger than the used size.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if no error.
  */
-bool yvector_resize(yvector_t *v, size_t size);
+yerr_t yvector_resize(yvector_t *v, size_t size);
 
 /**
  * @function	yvector_shrink
  *		Shrink a yvector to fit its content.
  * @param	v	A pointer to the yvector.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if no error.
  */
-bool yvector_shrink(yvector_t *v);
+yerr_t yvector_shrink(yvector_t *v);
 
 /**
  * @function	yvector_count
@@ -130,18 +131,18 @@ size_t yvector_count(yvector_t *v);
  *		Add an element at the beginning of a yvector.
  * @param	v	A pointer to the yvector.
  * @param	e	A pointer to the element.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if no error.
  */
-bool yvector_add(yvector_t *v, void *e);
+yerr_t yvector_add(yvector_t *v, void *e);
 
 /**
  * @function	yvector_push
  *		Add an element at the end of a yvector.
  * @param	v	A pointer to the yvector.
  * @param	e	A pointer to the element.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if no error.
  */
-bool yvector_push(yvector_t *v, void *e);
+yerr_t yvector_push(yvector_t *v, void *e);
 
 /**
  * @function	yvector_insert
@@ -153,9 +154,9 @@ bool yvector_push(yvector_t *v, void *e);
  * @param	e	A pointer to the element.
  * @param	offset	Offset of the element in the vector. Must be less or
  *			equal to the vector's elements count.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if no error.
  */
-bool yvector_insert(yvector_t *v, void *e, size_t offset);
+yerr_t yvector_insert(yvector_t *v, void *e, size_t offset);
 
 /**
  * @function	yvector_get
@@ -220,9 +221,9 @@ yvector_t *yvector_splice(yvector_t *v, size_t offset, size_t length);
  * @param	dest	Pointer to the destination yvector.
  * @param	src	Pointer to the source yvector.
  * @param	offset	Offset of the injection.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if no error.
  */
-bool yvector_inject(yvector_t *dest, yvector_t *src, size_t offset);
+yerr_t yvector_inject(yvector_t *dest, yvector_t *src, size_t offset);
 
 /**
  * @function	yvector_ninject
@@ -233,27 +234,27 @@ bool yvector_inject(yvector_t *dest, yvector_t *src, size_t offset);
  * @param	src	Pointer to the source yvector.
  * @param	start	Offset of the starting source slice.
  * @param	length	Length of the source slice. 0 to go to the end of the vector.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if no error.
  */
-bool yvector_ninject(yvector_t *dest, size_t offset, yvector_t *src, size_t start, size_t length);
+yerr_t yvector_ninject(yvector_t *dest, size_t offset, yvector_t *src, size_t start, size_t length);
 
 /**
  * @function	yvector_append
  *		Concatenate a yvector at the end of another one.
  * @param	dest	A pointer to the yvector to extend.
  * @param	src	A pointer to the source yvector.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if no error.
  */
-bool yvector_append(yvector_t *dest, yvector_t *src);
+yerr_t yvector_append(yvector_t *dest, yvector_t *src);
 
 /**
  * @function	yvector_prepend
  *		Concatenate a yvector at the beginning of another one.
  * @param	dest	Pointer to the yvector to extend.
  * @param	src	Pointer to the source yvector.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if no error.
  */
-bool yvector_prepend(yvector_t *dest, yvector_t *src);
+yerr_t yvector_prepend(yvector_t *dest, yvector_t *src);
 
 /**
  * @function	yvector_uniq
@@ -283,7 +284,7 @@ void yvector_sort(yvector_t *v, int (*f)(const void*, const void*, void*), void 
  * @return	The offset of the element in the yvector, or (-1) if the
  *		element can't be found.
  */
-long long int yvector_search(yvector_t *v, void *e, int (*f)(const void*, const void*));
+size_t yvector_search(yvector_t *v, void *e, int (*f)(const void*, const void*));
 
 /**
  * @function	yv_foreach

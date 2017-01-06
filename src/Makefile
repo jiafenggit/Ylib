@@ -10,6 +10,7 @@ SRC =		ymem.c		\
 		ystr.c		\
 		yvect.c		\
 		yvector.c	\
+		yarray.c	\
 		yhash.c		\
 		ymap.c		\
 		ylog.c		\
@@ -26,6 +27,7 @@ INCLUDES =	ydefs.h		\
 		ystr.h		\
 		yvect.h		\
 		yvector.h	\
+		yarray.h	\
 		yhash.h		\
 		ymap.h		\
 		ylog.h		\

@@ -69,7 +69,7 @@ void yjson_value_print(yjson_value_t *value, int depth, bool linefeed) {
 		printf("\"%s\"", value->string_value);
 	} else if (value->type == YJSON_ARRAY) {
 		printf("[\n");
-		int p[2] = {depth, yvector_length(value->array_value)};
+		int p[2] = {depth, yvector_count(value->array_value)};
 		yvector_foreach(value->array_value, _yjson_array_print_elem, p);
 		YJSON_INDENT(depth);
 		printf("]");

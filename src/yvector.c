@@ -1,16 +1,15 @@
 /* ********************************************************
  * *                       YVECTOR                        *
  * ******************************************************** */
-#include <stdbool.h>
 #include <string.h>
 #include <math.h>
 #include "ymem.h"
 #include "yvector.h"
 
 /* ************ PRIVATE DEFINITIONS AND MACROS ************ */
-/** @define _YVECT_DEFAULT_SIZE Default size of yvectors. */
+/** @define _YVECTOR_DEFAULT_SIZE Default size of yvectors. */
 #define _YVECTOR_DEFAULT_SIZE	8
-/** @define _YVECT_ROUND_SIZE Round the size to the next power of 2. */
+/** @define _YVECTOR_ROUND_SIZE Round the size to the next power of 2. */
 #define _YVECTOR_ROUND_SIZE(s)	((size_t)pow(2, ceil(log(s) / log(2))))
 
 /* ************ FUNCTIONS ************* */
@@ -31,7 +30,11 @@ yvector_t *yvector_new() {
 	yvector_t *v = ymalloc(sizeof(yvector_t));
 	if (!v)
 		return (NULL);
-	return (yvector_init(v));
+	if (!yvector_init(v)) {
+		yfree(v);
+		return (NULL);
+	}
+	return (v);
 }
 
 void yvector_clear(yvector_t *v, void (*f)(void*, void*), void *user_data) {
@@ -66,26 +69,30 @@ void yvector_truncate(yvector_t *v, void (*f)(void*, void*), void *user_data) {
 	v->count = 0;
 }
 
-bool yvector_resize(yvector_t *v, size_t size) {
+yerr_t yvector_resize(yvector_t *v, size_t size) {
 	void *new_data;
 
-	if (!v || !size || v->count > size ||
-	    !(new_data = yrealloc(v->data, _YVECTOR_ROUND_SIZE(size))))
-		return (false);
+	if (!v || !size || v->count > size)
+		return (YEINVAL);
+	if (!(new_data = yrealloc(v->data, _YVECTOR_ROUND_SIZE(size) * sizeof(void*))))
+		return (YENOMEM);
 	v->data = new_data;
 	v->size = size;
-	return (true);
+	return (YEOK);
 }
 
-bool yvector_shrink(yvector_t *v) {
-	void * new_data;
+yerr_t yvector_shrink(yvector_t *v) {
+	void *new_data;
 
-	if (!v || !v->count ||
-	    !(new_data = yrealloc(v->data, _YVECTOR_ROUND_SIZE(v->count))))
-		return (false);
+	if (!v)
+		return (YEINVAL);
+	if (!v->count)
+		return (YEINVAL);
+	if (!(new_data = yrealloc(v->data, _YVECTOR_ROUND_SIZE(v->count) * sizeof(void*))))
+		return (YENOMEM);
 	v->data = new_data;
 	v->size = v->count;
-	return (true);
+	return (YEOK);
 }
 
 size_t yvector_count(yvector_t *v) {
@@ -94,28 +101,38 @@ size_t yvector_count(yvector_t *v) {
 	return (v->count);
 }
 
-bool yvector_add(yvector_t *v, void *e) {
-	if (!v || (v->count == v->size && !yvector_resize(v, (v->size * 2))))
-		return (false);
-	memmove(&v->data[1], v->data, v->count);
+yerr_t yvector_add(yvector_t *v, void *e) {
+	if (!v)
+		return (YEINVAL);
+	yerr_t err;
+	if (v->count == v->size && (err = yvector_resize(v, (v->size * 2))) != YEOK)
+		return (err);
+	memmove(&v->data[1], v->data, v->count * sizeof(void*));
 	v->data[0] = e;
-	return (true);
+	return (YEOK);
 }
 
-bool yvector_push(yvector_t *v, void *e) {
-	if (!v || (v->count == v->size && !yvector_resize(v, (v->size * 2))))
-		return (false);
+yerr_t yvector_push(yvector_t *v, void *e) {
+	if (!v)
+		return (YEINVAL);
+	yerr_t err;
+	if (v->count == v->size && (err = yvector_resize(v, (v->size * 2))) != YEOK)
+		return (err);
 	v->data[v->count++] = e;
-	return (true);
+	return (YEOK);
 }
 
-bool yvector_insert(yvector_t *v, void *e, size_t offset) {
-	if (!v || (v->count == v->size && !yvector_resize(v, (v->size * 2))))
-		return (false);
+yerr_t yvector_insert(yvector_t *v, void *e, size_t offset) {
+	if (!v)
+		return (YEINVAL);
+	yerr_t err;
+	if (v->count == v->size && (err = yvector_resize(v, (v->size * 2))) != YEOK)
+		return (err);
 	if (offset >= v->count)
-		return (yvector_add(v, e));
-	memmove(&v->data[offset + 1], &v->data[offset], (v->count - offset));
+		return (yvector_push(v, e));
+	memmove(&v->data[offset + 1], &v->data[offset], (v->count - offset) * sizeof(void*));
 	v->data[offset] = e;
+	return (YEOK);
 }
 
 void *yvector_get(yvector_t *v, size_t offset) {
@@ -128,7 +145,7 @@ void *yvector_shift(yvector_t *v) {
 	if (!v || !v->count)
 		return (NULL);
 	void *result = v->data[0];
-	memmove(v->data, &v->data[1], (v->count - 1));
+	memmove(v->data, &v->data[1], (v->count - 1) * sizeof(void*));
 	v->count--;
 	return (result);
 }
@@ -144,7 +161,7 @@ void *yvector_extract(yvector_t *v, size_t offset) {
 	if (!v || offset >= v->count)
 		return (NULL);
 	void *result = v->data[offset];
-	memmove(&v->data[offset], &v->data[offset + 1], (v->count - offset));
+	memmove(&v->data[offset], &v->data[offset + 1], (v->count - offset) * sizeof(void*));
 	v->count--;
 	return (result);
 }
@@ -167,7 +184,7 @@ yvector_t *yvector_slice(yvector_t *v, size_t offset, size_t length) {
 		yfree(nv);
 		return (NULL);
 	}
-	memcpy(nv->data, &v->data[offset], length);
+	memcpy(nv->data, &v->data[offset], length * sizeof(void*));
 	return (nv);
 }
 
@@ -179,51 +196,53 @@ yvector_t *yvector_splice(yvector_t *v, size_t offset, size_t length) {
 	yvector_t *nv = yvector_slice(v, offset, length);
 	if (!nv)
 		return (NULL);
-	memmove(&v->data[offset], &v->data[offset + length], (v->count - offset - length));
+	memmove(&v->data[offset], &v->data[offset + length], (v->count - offset - length) * sizeof(void*));
 	v->count -= length;
 	return (nv);
 }
 
-bool yvector_inject(yvector_t *dest, yvector_t *src, size_t offset) {
+yerr_t yvector_inject(yvector_t *dest, yvector_t *src, size_t offset) {
 	if (!dest || !src)
-		return (false);
+		return (YEINVAL);
 	offset = (offset > dest->count) ? dest->count : offset;
 	size_t total = dest->count + src->count;
-	if (dest->size < total && !yvector_resize(dest, total))
-		return (false);
+	yerr_t err;
+	if (dest->size < total && (err = yvector_resize(dest, total)) != YEOK)
+		return (err);
 	if (offset == dest->count) {
-		memcpy(&dest->data[offset], src->data, src->count);
-		return (true);
+		memcpy(&dest->data[offset], src->data, src->count * sizeof(void*));
+		return (YEOK);
 	}
-	memmove(&dest->data[offset + src->count], &dest->data[offset], src->count);
-	memcpy(&dest->data[offset], src->data, src->count);
+	memmove(&dest->data[offset + src->count], &dest->data[offset], src->count * sizeof(void*));
+	memcpy(&dest->data[offset], src->data, src->count * sizeof(void*));
 	dest->count += src->count;
-	return (true);
+	return (YEOK);
 }
 
-bool yvector_ninject(yvector_t *dest, size_t offset, yvector_t *src, size_t start, size_t length) {
+yerr_t yvector_ninject(yvector_t *dest, size_t offset, yvector_t *src, size_t start, size_t length) {
 	if (!dest || !src || (start + length) > src->count)
-		return (false);
+		return (YEINVAL);
 	offset = (offset > dest->count) ? dest->count : offset;
 	length = !length ? (src->count - start) : length;
 	size_t total = dest->count + length;
-	if (dest->size < total && !yvector_resize(dest, total))
-		return (false);
+	yerr_t err;
+	if (dest->size < total && (err = yvector_resize(dest, total)) != YEOK)
+		return (err);
 	if (offset == dest->count) {
-		memcpy(&dest->data[offset], &src->data[start], length);
-		return (true);
+		memcpy(&dest->data[offset], &src->data[start], length * sizeof(void*));
+		return (YEOK);
 	}
-	memmove(&dest->data[offset + length], &dest->data[offset], length);
-	memcpy(&dest->data[offset], &src->data[start], length);
+	memmove(&dest->data[offset + length], &dest->data[offset], length * sizeof(void*));
+	memcpy(&dest->data[offset], &src->data[start], length * sizeof(void*));
 	dest->count += length;
-	return (true);
+	return (YEOK);
 }
 
-bool yvector_append(yvector_t *dest, yvector_t *src) {
+yerr_t yvector_append(yvector_t *dest, yvector_t *src) {
 	return (yvector_inject(dest, src, dest->count));
 }
 
-bool yvector_prepend(yvector_t *dest, yvector_t *src) {
+yerr_t yvector_prepend(yvector_t *dest, yvector_t *src) {
 	return (yvector_inject(dest, src, 0));
 }
 
@@ -233,8 +252,7 @@ void yvector_uniq(yvector_t *v) {
 	for (size_t i = 0; i < v->count; ++i) {
 		for (size_t j = i + 1; j < v->count; ++j) {
 			if (v->data[i] == v->data[j]) {
-				for (size_t k = j + 1; k < (v->count - 1); ++k)
-					v->data[k] = v->data[k + 1];
+				memmove(&v->data[j], &v->data[j + 1], (v->count - j - 1));
 				v->count--;
 			}
 		}
@@ -247,8 +265,8 @@ void yvector_sort(yvector_t *v, int (*f)(const void*, const void*, void*), void 
 	qsort_r(v->data, v->count, sizeof(void*), f, user_data);
 }
 
-long long int yvector_search(yvector_t *v, void *e, int (*f)(const void*, const void*)) {
-	int o_start, o_end, o_pivot;
+size_t yvector_search(yvector_t *v, void *e, int (*f)(const void*, const void*)) {
+	size_t o_start, o_end, o_pivot;
 	int cmp_res;
 
 	if (!v || !f)
