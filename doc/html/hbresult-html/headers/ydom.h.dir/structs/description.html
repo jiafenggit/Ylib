@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ydom.h&nbsp;/&nbsp;Structures&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Structures</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="ydom_s"></a>
+		<h3>ydom_s</h3>
+		
+		<blockquote><pre>struct <B>ydom_s</B> {
+	struct ydom_node_s *document_element;
+	struct ydom_node_s *current_parsed_node;
+	yerr_t error;
+	char *xml_version;
+	char *encoding;
+	char *standalone;
+};</pre></blockquote>
+		Structure for DOM representation.<br /><br />
+		<b>Fields</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>document_element</tt></td><td>&nbsp;Pointer to the root document node.</td></tr>
+			<tr><td align="center"><tt>current_parsed_node</tt></td><td>&nbsp;Pointer used during XML file parsing.</td></tr>
+			<tr><td align="center"><tt>error</tt></td><td>&nbsp;Error status value.</td></tr>
+			<tr><td align="center"><tt>xml_version</tt></td><td>&nbsp;String which contains the XML version of the document.</td></tr>
+			<tr><td align="center"><tt>encoding</tt></td><td>&nbsp;String which contains the type of document encoding.</td></tr>
+			<tr><td align="center"><tt>standalone</tt></td><td>&nbsp;"yes" if the document has a DTD.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ydom_node_s"></a>
+		<h3>ydom_node_s</h3>
+		
+		<blockquote><pre>struct <B>ydom_node_s</B> {
+	ydom_node_type_t node_type;
+	bool complete;
+	char *name;
+	char *value;
+	int position;
+	struct ydom_node_s *parent;
+	struct ydom_node_s *prev;
+	struct ydom_node_s *next;
+	struct ydom_node_s *attributes;
+	struct ydom_node_s *first_child;
+	struct ydom_node_s *last_child;
+	struct ydom_node_s *document;
+};</pre></blockquote>
+		Structure for XML Node representation.<br /><br />
+		<b>Fields</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>node_type</tt></td><td>&nbsp;Type of the node.</td></tr>
+			<tr><td align="center"><tt>complete</tt></td><td>&nbsp;Set to TRUE when the parse of the node in the XML file is complete.</td></tr>
+			<tr><td align="center"><tt>name</tt></td><td>&nbsp;Name of the node.</td></tr>
+			<tr><td align="center"><tt>value</tt></td><td>&nbsp;Value of the node.</td></tr>
+			<tr><td align="center"><tt>position</tt></td><td>&nbsp;Node posision relative to its sibblings.</td></tr>
+			<tr><td align="center"><tt>parent</tt></td><td>&nbsp;Pointer to the parent node.</td></tr>
+			<tr><td align="center"><tt>prev</tt></td><td>&nbsp;Pointer to the previous sibling of the node.</td></tr>
+			<tr><td align="center"><tt>next</tt></td><td>&nbsp;Pointer to the next sibling of the node.</td></tr>
+			<tr><td align="center"><tt>attributes</tt></td><td>&nbsp;Pointer to the first attribute of the node.</td></tr>
+			<tr><td align="center"><tt>first_child</tt></td><td>&nbsp;Pointer to the first child of the node.</td></tr>
+			<tr><td align="center"><tt>last_child</tt></td><td>&nbsp;Pointer to the last child of the node.</td></tr>
+			<tr><td align="center"><tt>document</tt></td><td>&nbsp;Pointer to the document node of this node.</td></tr>
+		</table></center><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

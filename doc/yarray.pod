@@ -1,0 +1,66 @@
+=pod
+
+=head1 NAME
+
+yarray.h - Arrays of data
+
+=head1 SYNOPSIS
+
+#include "yarray.h"
+
+yarray_t *yarray_init(yarray_t *a, size_t element_size);
+
+yarray_t *yarray_new(size_t element_size);
+
+void yarray_clear(yarray_t *a, void (*f)(void*, void*), void *user_data);
+
+void yarray_free(yarray_t *a, void (*f)(void*, void*), void *user_data);
+
+yarray_t *yarray_duplicate(yarray_t *a);
+
+void yarray_truncate(yarray_t *a, void (*f)(void*, void*), void *user_data);
+
+bool yarray_resize(yarray_t *a, size_t size);
+
+bool yarray_shrink(yarray_t *a);
+
+size_t yarray_count(yarray_t *a);
+
+bool yarray_add(yarray_t *a, void *e);
+
+bool yarray_push(yarray_t *v, void *e);
+
+bool yarray_insert(yarray_t *a, void *e, size_t offset);
+
+void *yarray_get(yarray_t *a, size_t offset);
+
+void yarray_shift(yarray_t *a);
+
+void yarray_pop(yarray_t *a);
+
+void yarray_extract(yarray_t *a, size_t offset);
+
+yarray_t *yarray_slice(yarray_t *a, size_t offset, size_t length);
+
+yarray_t *yarray_splice(yarray_t *a, size_t offset, size_t length);
+
+bool yarray_inject(yarray_t *dest, yarray_t *src, size_t offset);
+
+bool yarray_ninject(yarray_t *dest, size_t offset, yarray_t *src, size_t start, size_t length);
+
+bool yarray_append(yarray_t *dest, yarray_t *src);
+
+bool yarray_prepend(yarray_t *dest, yarray_t *src);
+
+void yarray_uniq(yarray_t *a);
+
+void yarray_sort(yarray_t *a, int (*f)(const void*, const void*, void*), void *user_data);
+
+size_t yarray_search(yarray_t *a, void *e, int (*f)(const void*, const void*));
+
+void yarray_foreach(yarray_t *a, yarray_function_t func, void *user_data);
+
+=head1 DESCRIPTION
+
+Yarrays are arrays of any kind of data. These data are stocked directly inside the array (i.e. it is not an array of pointers to the data).
+

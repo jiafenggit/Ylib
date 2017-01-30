@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ymem.h&nbsp;/&nbsp;Functions&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Functions</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="_ymalloc"></a>
+		<h3>_ymalloc</h3>
+		
+		<blockquote><pre>void *ymalloc(size_t size);
+
+/*!
+ * @function	_ycalloc
+ *		Alloc chunks of memory.
+ * @param	nbr	Number of chunks.
+ * @param	size	Size of one chunk.
+ * @return	A pointer to the allocated memory.
+ */
+void *ycalloc(size_t nbr, size_t size);
+
+/*!
+ * @function	_yfree
+ *		Freed memory.
+ * @param	ptr	Pointer to the allocated zone.
+ * @return	NULL
+ */
+void *yfree(void *ptr);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif /* __cplusplus || c_plusplus */
+
+#endif /* __YMEM_H__ */
+</pre></blockquote>
+		Allocate memory.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>size</tt></td><td>&nbsp;The size of the memory space that must be allocated.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the allocated memory.<br /><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

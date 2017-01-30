@@ -1,8 +1,12 @@
 FILES	=	y	\
-		y.sys
+		yerror	\
+		ymem	\
+		yarray	\
+		yvector
 
 doc:
 	for f in $(FILES); do \
+		echo "Generating " $$f; \
 		cat $$f.pod _footer.pod > __file.pod; \
 		pod2man -c "Ylib" -r "2.0.0" __file.pod $$f.man.3; \
 		rm -f __file.pod; \

@@ -4,7 +4,7 @@ Amaury Bouchard (amaury@amaury.net)
 
 =head1 COPYRIGHT
 
-Copyright (c) 2016, Amaury Bouchard
+Copyright (c) 2017, Amaury Bouchard
 
 This manual is distributed under the terms of the GNU B<Free Documentation License> (I<http://www.gnu.org/licenses/fdl.html>).
 

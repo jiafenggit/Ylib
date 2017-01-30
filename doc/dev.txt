@@ -1,0 +1,129 @@
+						| Ylib		| Ylib 2	| PHP		| Python	| Java
+						|----------------------------------------------------------------------------------------------------
+LIST						|		|		|		|		|
+------------------------------------------------|		|		|		|		|
+Create a new list				| new		| new		|		|		|
+Delete a list					| delete	| free		|		|		|
+Truncate a list					|		|		| trunc		| clear		|
+Duplicate a list				|		|		|		| copy		|
+Add an element at the end of a list		| add		|		| push		| append	|
+Add an element at the beginning of a list	| put		|		| unshift	|		|
+Remove the last element and return it		| get		|		| pop		|		|
+Remove the first element and return it		| pop		|		| shift		|		|
+Put the internal pointer at the beginning	| rewind	|		| reset		|		|
+Return the currently pointed element		|		|		| current	|		|
+Set the internal pointer to the last element	|		|		| end		|		|
+Set the internal pointer to the next element	|		|		| next		|		|
+Set the internal pointer to the previous element|		|		| prev		|		|
+Get the element pointed by the internal pointer	|		|		| get		|		|
+Sort a list					|		|		| sort		|		|
+Process every elements of a list		| foreach	|		|		|		|
+Get the size of a list				|		|		| count		| len		|
+Get the total number of occurrences of an elem	|		|		|		| count		|
+						|		|		|		|		|
+HASH MAP					|		|		|		|		|
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+Create a new hash map				| create	| new		|		|		|
+Delete a hash map				| free		|		|		|		|
+Truncate a hash map				|		|		| trunc		| clear		|
+Duplicate a hash map				|		|		|		| copy		|
+Add an element in a hash map			| add		|		|		|		|
+Remove an element and returns its value		| remove	|		|		|		|
+Search a value from its key			| search	|		|		|		|
+Search an element from its key			| search_element|		|		|		|
+Change the size of a hash map			| resize	|		|		|		|
+Process every elements of a hash map		| foreach	|		|		|		|
+Get the size of a hash map			|		|		| count		| len		|
+Get the total number of occurrences of an elem	|		|		|		| count		|
+						|		|		|		|		|
+VECTOR						|		|		|		|		|
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+Create a new vector				| new		|		|		|		|
+Delete a vector					| free		|		|		|		|
+Truncate a vector				| trunc		|		| trunc		| clear		|
+Get the size of a vector			| len		|		| count		| len		|
+Add an element at the beginning of a vector	| put		|		|		|		|
+Add an element at the end of a vector		| add		|		|		|		|
+Insert an element at the given offset		| ins		|		|		| insert	|
+Remove the first element and return it		| pop		|		|		|		|
+Remove the last element and return it		| get		|		|		|		|
+Extract the element at the given offset		| ext		|		|		| pop		|
+Extract the first element of a given value	|		|		|		| remove	|
+Remove all values to let only one entry of each	| uniq		|		|		|		|
+Sort a vector					| sort		|		| sort		|		|
+Search the offset of an element			| search	|		|		|		|
+Process every elements				| foreach	|		|		|		|
+Reverse a vector				|		|		| revert (?)	| reverse	|
+
+
+VECTOR
+======
+new
+free
+trunc
+setsz
+len
+ -> len [python]
+cat (Concatenate a yvector at the end of another one)
+ -> extend [python]
+ncat (Concatenate a given number of elements from a yvector at the end of another)
+dup (duplicate a vector)
+concat (Concatenate 2 yvectors to create a new one)
+put (Add an element at the beginning of a yvector)
+add (Add an element at the end of a yvector)
+ins (Insert an element at the given offset of a yvector. All elements placed at this offset and after are shifted to the right)
+ -> insert [python]
+pop (Remove the first element of a yvector and return it)
+get (Remove the last element of a yvector and return it)
+ext (Extract the element placed at the given offset of a yvector. All elements placed after the offset are shifted to the left)
+ -> pop [python]
+uniq (Remove all values of a yvector to let only one entry of each value)
+sort
+search (Search the offset of an element in a yvector using dichotomy)
+foreach
++ reverse [python]
++ remove [python] (Extract the first element which value is equal to the given one)
+
+
+
+MAP
+===
+create
+ -> new
+free
+add
+remove (doesn't return the value)
+search (returns a value)
+search_element (returns a pointer to the element)
+resize
+foreach
+
+
+
+LIST
+====
+new
+delete
+ -> free
+add (Add an element at the end of a list)
+ -> push [php], append [python]
+put (Add an element at the beginning of a list)
+ -> unshift
+get (Remove the last element of a list and returns it)
+ -> pop
+pop (Remove the first element of a list and returns it)
+ -> shift
+swap (Extract a list element from one list, and add it at the end of another list)
+rewind
+ -> reset
+foreach
++ current (returns the current element)
++ end (set the internal pointer to the last element)
++ next (put the internal pointer to the next element)
++ prev (put the internal pointer to the previous element)
++ get (get the element pointed by the internal pointer)
++ sort
++ trunc -> clear [python]
++ dup -> copy [python]
+
+

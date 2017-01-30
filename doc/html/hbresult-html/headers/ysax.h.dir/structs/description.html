@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ysax.h&nbsp;/&nbsp;Structures&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Structures</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="ysax_attr_s"></a>
+		<h3>ysax_attr_s</h3>
+		
+		<blockquote><pre>struct <B>ysax_attr_s</B> {
+	char *name;
+	char *value;
+};</pre></blockquote>
+		Structure used to describe an XML attribute.<br /><br />
+		<b>Fields</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>name</tt></td><td>&nbsp;Attribute's name.</td></tr>
+			<tr><td align="center"><tt>value</tt></td><td>&nbsp;Attibute's value.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ysax_s"></a>
+		<h3>ysax_s</h3>
+		
+		<blockquote><pre>struct <B>ysax_s</B> {
+	FILE *file;
+	bool must_close_stream;
+	char *mem;
+	char (*getc_hdlr)(void*);
+	void (*ungetc_hdlr)(char, void*);
+	void *xml_data;
+	void *parse_data;
+	void (*open_tag_hdlr)(struct ysax_s*, char*, yvect_t);
+	void (*inside_text_hdlr)(struct ysax_s*, char*);
+	void (*close_tag_hdlr)(struct ysax_s*, char*);
+	void (*comment_hdlr)(struct ysax_s*, char*);
+	void (*process_instr_hdlr)(struct ysax_s*, char*, char*);
+	void (*cdata_hdlr)(struct ysax_s*, char*);
+	yerr_t error;
+	int line_nbr;
+};</pre></blockquote>
+		Object for SAX XML parser.<br /><br />
+		<b>Fields</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>file</tt></td><td>&nbsp;Stream of the XML file</td></tr>
+			<tr><td align="center"><tt>file_mode</tt></td><td>&nbsp;Set to true if the file must be close.</td></tr>
+			<tr><td align="center"><tt>mem</tt></td><td>&nbsp;Pointer to character string to parse.</td></tr>
+			<tr><td align="center"><tt>getc_hdlr</tt></td><td>&nbsp;Function pointer to get data.</td></tr>
+			<tr><td align="center"><tt>ungetc_hdlr</tt></td><td>&nbsp;Function pointer to unget data.</td></tr>
+			<tr><td align="center"><tt>xml_data</tt></td><td>&nbsp;Pointer to data used by getc/ungetc handlers.</td></tr>
+			<tr><td align="center"><tt>parse_data</tt></td><td>&nbsp;Pointer to some data (for handlers using).</td></tr>
+			<tr><td align="center"><tt>open_tag_hdlr</tt></td><td>&nbsp;Function pointer to call when an open tag is finded.</td></tr>
+			<tr><td align="center"><tt>inside_text_hdlr</tt></td><td>&nbsp;Function pointer for text inside tags.</td></tr>
+			<tr><td align="center"><tt>close_tag_hdlr</tt></td><td>&nbsp;Function pointer for close tags.</td></tr>
+			<tr><td align="center"><tt>comment_hdlr</tt></td><td>&nbsp;Function pointer for XML comments.</td></tr>
+			<tr><td align="center"><tt>process_instr_hdlr</tt></td><td>&nbsp;Function pointer for processing instructions.</td></tr>
+			<tr><td align="center"><tt>cdata_hdlr</tt></td><td>&nbsp;Function pointer for CDATA instructions.</td></tr>
+			<tr><td align="center"><tt>error</tt></td><td>&nbsp;Current status of SAX parsing.</td></tr>
+			<tr><td align="center"><tt>line_nbr</tt></td><td>&nbsp;Current line of the file parsing.</td></tr>
+		</table></center><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

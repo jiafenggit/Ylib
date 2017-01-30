@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;yvect.h&nbsp;/&nbsp;Functions&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Functions</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="yv_new"></a>
+		<h3>yv_new</h3>
+		
+		<blockquote><pre>yvect_t <B>yv_new</B>(size_t size);</pre></blockquote>
+		Creates a new yvector of the given size. Use the default size (4 KB) if the given size is zero.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>size</tt></td><td>&nbsp;Size of the new yvector.</td></tr>
+		</table></center><br />
+		<b>Result: </b>The created yvector.<br /><br />
+		<hr width="100%" />
+		<a name="yv_free"></a>
+		<h3>yv_free</h3>
+		
+		<blockquote><pre>void <B>yv_free</B>(yvect_t *v, void (*f)(void*, void*), void *data);</pre></blockquote>
+		Delete an existing yvector.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;A pointer to the yvector.</td></tr>
+			<tr><td align="center"><tt>f</tt></td><td>&nbsp;Pointer to a function that is called to delete each element of the vector. Could be NULL ; otherwise, must have this prototype : void f(void *elem, void *data);</td></tr>
+			<tr><td align="center"><tt>data</tt></td><td>&nbsp;Pointer to data that could be given to the delete callback (see previous parameter). Could be NULL.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="yv_trunc"></a>
+		<h3>yv_trunc</h3>
+		
+		<blockquote><pre>void <B>yv_trunc</B>(yvect_t v, void (*f)(void*, void*), void *data);</pre></blockquote>
+		Truncate an existing yvector. The allocated memory doesn't change.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;The yvector.</td></tr>
+			<tr><td align="center"><tt>f</tt></td><td>&nbsp;Pointer to a function that is called to delete each element of the vector. Could be NULL ; otherwise, must have this prototype : void f(void *elem, void *data);</td></tr>
+			<tr><td align="center"><tt>data</tt></td><td>&nbsp;Pointer to data that could be given to the delete callback (see previous parameter). Could be NULL.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="yv_setsz"></a>
+		<h3>yv_setsz</h3>
+		
+		<blockquote><pre>int <B>yv_setsz</B>(yvect_t *v, size_t sz);</pre></blockquote>
+		Set the minimum size of a yvector.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;A pointer to the yvector.</td></tr>
+			<tr><td align="center"><tt>sz</tt></td><td>&nbsp;The minimum size for this yvector.</td></tr>
+		</table></center><br />
+		<b>Result: </b>0 if an error occurs, 1 otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="yv_len"></a>
+		<h3>yv_len</h3>
+		
+		<blockquote><pre>size_t <B>yv_len</B>(yvect_t v);</pre></blockquote>
+		Return the length of a yvector (its used size).<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;The yvector.</td></tr>
+		</table></center><br />
+		<b>Result: </b>The yvector's length.<br /><br />
+		<hr width="100%" />
+		<a name="yv_cat"></a>
+		<h3>yv_cat</h3>
+		
+		<blockquote><pre>int <B>yv_cat</B>(yvect_t *dest, yvect_t src);</pre></blockquote>
+		Concatenate a yvector at the end of another one.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>dest</tt></td><td>&nbsp;A pointer to the yvector to extend.</td></tr>
+			<tr><td align="center"><tt>src</tt></td><td>&nbsp;A yvector.</td></tr>
+		</table></center><br />
+		<b>Result: </b>0 if an error occurs, 1 otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="yv_ncat"></a>
+		<h3>yv_ncat</h3>
+		
+		<blockquote><pre>int <B>yv_ncat</B>(yvect_t *dest, yvect_t src, size_t n);</pre></blockquote>
+		Concatenate a given number of elements from a yvector at the end of another.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>dest</tt></td><td>&nbsp;A pointer to the yvector to extend.</td></tr>
+			<tr><td align="center"><tt>src</tt></td><td>&nbsp;A yvector.</td></tr>
+			<tr><td align="center"><tt>n</tt></td><td>&nbsp;The number of elements to copy.</td></tr>
+		</table></center><br />
+		<b>Result: </b>0 if an error occurs, 1 otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="yv_dup"></a>
+		<h3>yv_dup</h3>
+		
+		<blockquote><pre>yvect_t <B>yv_dup</B>(yvect_t v);</pre></blockquote>
+		Duplicate a yvector.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;The yvector.</td></tr>
+		</table></center><br />
+		<b>Result: </b>The new yvector.<br /><br />
+		<hr width="100%" />
+		<a name="yv_concat"></a>
+		<h3>yv_concat</h3>
+		
+		<blockquote><pre>yvect_t <B>yv_concat</B>(yvect_t v1, yvect_t v2);</pre></blockquote>
+		Concatenate 2 yvectors to create a new one.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v1</tt></td><td>&nbsp;The first yvector.</td></tr>
+			<tr><td align="center"><tt>v2</tt></td><td>&nbsp;The second yvector.</td></tr>
+		</table></center><br />
+		<b>Result: </b>The new ystring.<br /><br />
+		<hr width="100%" />
+		<a name="yv_put"></a>
+		<h3>yv_put</h3>
+		
+		<blockquote><pre>int <B>yv_put</B>(yvect_t *v, void *e);</pre></blockquote>
+		Add an element at the beginning of a yvector.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;A pointer to the yvector.</td></tr>
+			<tr><td align="center"><tt>e</tt></td><td>&nbsp;A pointer to the element.</td></tr>
+		</table></center><br />
+		<b>Result: </b>0 if an error occurs, 1 otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="yv_add"></a>
+		<h3>yv_add</h3>
+		
+		<blockquote><pre>int <B>yv_add</B>(yvect_t *v, void *e);</pre></blockquote>
+		Add an element at the end of a yvector.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;A pointer to the yvector.</td></tr>
+			<tr><td align="center"><tt>e</tt></td><td>&nbsp;A pointer to the element.</td></tr>
+		</table></center><br />
+		<b>Result: </b>0 if an error occurs, 1 otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="yv_ins"></a>
+		<h3>yv_ins</h3>
+		
+		<blockquote><pre>int <B>yv_ins</B>(yvect_t *v, void *e, size_t i);</pre></blockquote>
+		Insert an element at the given offset of a yvector. All elements placed at this offset and after are shifted to the right.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;A pointer to the yvector.</td></tr>
+			<tr><td align="center"><tt>e</tt></td><td>&nbsp;A pointer to the element.</td></tr>
+			<tr><td align="center"><tt>i</tt></td><td>&nbsp;Offset of the element in the vector. Must be less or equal to the vector's used size.</td></tr>
+		</table></center><br />
+		<b>Result: </b>0 if an error occurs, 1 otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="yv_pop"></a>
+		<h3>yv_pop</h3>
+		
+		<blockquote><pre>void *<B>yv_pop</B>(yvect_t v);</pre></blockquote>
+		Remove the first element of a yvector and return it.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;The yvector.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the removed element.<br /><br />
+		<hr width="100%" />
+		<a name="yv_get"></a>
+		<h3>yv_get</h3>
+		
+		<blockquote><pre>void *<B>yv_get</B>(yvect_t v);</pre></blockquote>
+		Remove the last element of a yvector and return it.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;The yvector.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the removed element.<br /><br />
+		<hr width="100%" />
+		<a name="yv_ext"></a>
+		<h3>yv_ext</h3>
+		
+		<blockquote><pre>void *<B>yv_ext</B>(yvect_t v, size_t i);</pre></blockquote>
+		Extract the element placed at the given offset of a yvector. All elements placed after the offset are shifted to the left.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;The yvector.</td></tr>
+			<tr><td align="center"><tt>i</tt></td><td>&nbsp;Offset of the element in the vector. Must be less than the vector's used size.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the removed element.<br /><br />
+		<hr width="100%" />
+		<a name="yv_uniq"></a>
+		<h3>yv_uniq</h3>
+		
+		<blockquote><pre>void <B>yv_uniq</B>(yvect_t v);</pre></blockquote>
+		Remove all values of a yvector to let only one entry of each value.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;The yvector.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="yv_sort"></a>
+		<h3>yv_sort</h3>
+		
+		<blockquote><pre>void <B>yv_sort</B>(yvect_t v, int (*f)(const void*, const void*));</pre></blockquote>
+		Do a quick sort of all elements of a yvector. See qsort(3).<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;The yvector.</td></tr>
+			<tr><td align="center"><tt>f</tt></td><td>&nbsp;A pointer to the function used to compare elements.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="yv_search"></a>
+		<h3>yv_search</h3>
+		
+		<blockquote><pre>int <B>yv_search</B>(yvect_t v, void *e, int (*f)(const void*, const void*));</pre></blockquote>
+		Search the offset of an element in a yvector. WARNING: the yvector must be sorted (using yv_sort()) because this function uses dichotomy.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;The yvector.</td></tr>
+			<tr><td align="center"><tt>e</tt></td><td>&nbsp;The element to compare.</td></tr>
+			<tr><td align="center"><tt>f</tt></td><td>&nbsp;A pointer to the function used to compare elements.</td></tr>
+		</table></center><br />
+		<b>Result: </b>The offset of the element in the yvector, or (-1) if the element doesn't be finded.<br /><br />
+		<hr width="100%" />
+		<a name="yv_foreach"></a>
+		<h3>yv_foreach</h3>
+		
+		<blockquote><pre>void <B>yv_foreach</B>(yvect_t v, yvect_function_t func, void *user_data);</pre></blockquote>
+		Apply a function on every elements of a vector.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>v</tt></td><td>&nbsp;The yvector.</td></tr>
+			<tr><td align="center"><tt>func</tt></td><td>&nbsp;Pointer to the executed function.</td></tr>
+			<tr><td align="center"><tt>user_data</tt></td><td>&nbsp;Pointer to some user data.</td></tr>
+		</table></center><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

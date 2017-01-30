@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;yvect.h&nbsp;/&nbsp;Type definitions&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Type definitions</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="yvect_t"></a>
+		<h3>yvect_t</h3>
+		
+		<blockquote><pre>typedef void** <B>yvect_t</B>;</pre></blockquote>
+		Vector type definition. Always equivalent to (void**). <br /><br />
+		<hr width="100%" />
+		<a name="yvect_function_t"></a>
+		<h3>yvect_function_t</h3>
+		
+		<blockquote><pre>typedef void (*<B>yvect_function_t</B>)(size_t index, void *data, void *user_data);</pre></blockquote>
+		Function pointer, used to apply a procedure to an element.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" WIDTH="80%%">
+			<tr><td align="center"><tt>index</tt></td><td>&nbsp;Index of the element in the vector.</td></tr>
+			<tr><td align="center"><tt>data</tt></td><td>&nbsp;Pointer to the data.</td></tr>
+			<tr><td align="center"><tt>user_data</tt></td><td>&nbsp;Pointer to some user data.</td></tr>
+		</table></center><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

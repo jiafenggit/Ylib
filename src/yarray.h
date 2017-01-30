@@ -10,10 +10,17 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdbool.h>
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif /* __cplusplus || c_plusplus */
+
+/* ************ PRIVATE DEFINITIONS AND MACROS ************ */
+/** @define _YARRAY_DEFAULT_SIZE Default size of yarrays. */
+#define _YARRAY_DEFAULT_SIZE	8
+/** @define _YARRAY_ROUND_SIZE Round the size to the next power of 2. */
+#define _YARRAY_ROUND_SIZE(s)	((size_t)pow(2, ceil(log(s) / log(2))))
 
 /**
  * @typedef	yarray_t

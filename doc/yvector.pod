@@ -1,0 +1,66 @@
+=pod
+
+=head1 NAME
+
+yvector.h - Vectors: array of I<void*> pointers
+
+=head1 SYNOPSIS
+
+#include "yvector.h"
+
+yvector_t *yvector_init(yvector_t *v);
+
+yvector_t *yvector_new(void);
+
+void yvector_clear(yvector_t *v, void (*f)(void*, void*), void *user_data);
+
+void yvector_free(yvector_t *v, void (*f)(void*, void*), void *user_data);
+
+yvector_t *yvector_duplicate(yvector_t *v);
+
+void yvector_truncate(yvector_t *v, void (*f)(void*, void*), void *user_data);
+
+yerr_t yvector_resize(yvector_t *v, size_t size);
+
+yerr_t yvector_shrink(yvector_t *v);
+
+size_t yvector_count(yvector_t *v);
+
+yerr_t yvector_add(yvector_t *v, void *e);
+
+yerr_t yvector_push(yvector_t *v, void *e);
+
+yerr_t yvector_insert(yvector_t *v, void *e, size_t offset);
+
+void *yvector_get(yvector_t *v, size_t offset);
+
+void *yvector_shift(yvector_t *v);
+
+void *yvector_pop(yvector_t *v);
+
+void *yvector_extract(yvector_t *v, size_t offset);
+
+yvector_t *yvector_slice(yvector_t *v, size_t offset, size_t length);
+
+yvector_t *yvector_splice(yvector_t *v, size_t offset, size_t length);
+
+yerr_t yvector_inject(yvector_t *dest, yvector_t *src, size_t offset);
+
+yerr_t yvector_ninject(yvector_t *dest, size_t offset, yvector_t *src, size_t start, size_t length);
+
+yerr_t yvector_append(yvector_t *dest, yvector_t *src);
+
+yerr_t yvector_prepend(yvector_t *dest, yvector_t *src);
+
+void yvector_uniq(yvector_t *v);
+
+void yvector_sort(yvector_t *v, int (*f)(const void*, const void*, void*), void *user_data);
+
+size_t yvector_search(yvector_t *v, void *e, int (*f)(const void*, const void*));
+
+void yvector_foreach(yvector_t *v, yvector_function_t func, void *user_data);
+
+=head1 DESCRIPTION
+
+Vectors are arrays of I<void*> pointers.
+

@@ -1,0 +1,28 @@
+=pod
+
+=head1 NAME
+
+yerror.h - Error type and return values
+
+=head1 SYNOPSIS
+
+#include "yerror.h"
+
+=head1 DESCRIPTION
+
+B<yerror.h> contains the definition of the I<yerr_t> type, which is a return value for functions that could raise some errors.
+
+=head1 VALUES
+
+=over 4
+
+=item B<YEOK> B<YENOERR>
+
+No error.
+
+=item B<YEUNDEF>
+
+Undefined error.
+
+=back
+

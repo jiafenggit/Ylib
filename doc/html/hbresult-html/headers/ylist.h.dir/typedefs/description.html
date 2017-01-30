@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ylist.h&nbsp;/&nbsp;Type definitions&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Type definitions</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="ylist_t"></a>
+		<h3>ylist_t</h3>
+		
+		<blockquote><pre>typedef struct ylist_s {
+	struct ylist_elem_s *first;
+	struct ylist_elem_s *last;
+	struct ylist_elem_s *ptr;
+} <B>ylist_t</B>;</pre></blockquote>
+		Double-linked list.<br /><br />
+		<b>Fields</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>first</tt></td><td>&nbsp;First element of the list.</td></tr>
+			<tr><td align="center"><tt>last</tt></td><td>&nbsp;Last element of the list.</td></tr>
+			<tr><td align="center"><tt>ptr</tt></td><td>&nbsp;Pointer to the currently processed element.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ylist_elem_t"></a>
+		<h3>ylist_elem_t</h3>
+		
+		<blockquote><pre>typedef struct ylist_elem_s {
+	void *data;
+	struct ylist_elem_s *prev;
+	struct ylist_elem_s *next;
+	ylist_t *list;
+} <B>ylist_elem_t</B>;</pre></blockquote>
+		Double-linked list element.<br /><br />
+		<b>Fields</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>data</tt></td><td>&nbsp;Pointer to the list element.</td></tr>
+			<tr><td align="center"><tt>prev</tt></td><td>&nbsp;Pointer to the previous element.</td></tr>
+			<tr><td align="center"><tt>next</tt></td><td>&nbsp;Pointer to the next element.</td></tr>
+			<tr><td align="center"><tt>list</tt></td><td>&nbsp;Pointer to the list which contains the element.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ylist_func_t"></a>
+		<h3>ylist_func_t</h3>
+		
+		<blockquote><pre>typedef bool (*<B>ylist_func_t</B>)(void *elem_data, void *user_data);</pre></blockquote>
+		Pointer to a function.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" WIDTH="80%%">
+			<tr><td align="center"><tt>elem_data</tt></td><td>&nbsp;Pointer to the data in the list.</td></tr>
+			<tr><td align="center"><tt>user_data</tt></td><td>&nbsp;Pointer to some user data.</td></tr>
+		</table></center><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

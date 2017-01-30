@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ystr.h&nbsp;/&nbsp;Functions&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Functions</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="ys_new"></a>
+		<h3>ys_new</h3>
+		
+		<blockquote><pre>ystr_t <B>ys_new</B>(const char *s);</pre></blockquote>
+		Create a new ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;Original string that will be copied in the ystring. Could be NULL to create an empty (but allocated) ystring.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the created ystring.<br /><br />
+		<hr width="100%" />
+		<a name="ys_free"></a>
+		<h3>ys_free</h3>
+		
+		<blockquote><pre>void <B>ys_free</B>(ystr_t *s);</pre></blockquote>
+		Delete an existing ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ys_trunc"></a>
+		<h3>ys_trunc</h3>
+		
+		<blockquote><pre>void <B>ys_trunc</B>(ystr_t s);</pre></blockquote>
+		Truncate an existing ystring. The allocated memory doesn't change.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;The ystring.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ys_setsz"></a>
+		<h3>ys_setsz</h3>
+		
+		<blockquote><pre>bool <B>ys_setsz</B>(ystr_t *s, size_t sz);</pre></blockquote>
+		Set the minimum size of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+			<tr><td align="center"><tt>sz</tt></td><td>&nbsp;The minimum size for this ystring.</td></tr>
+		</table></center><br />
+		<b>Result: </b>false if an error occurs, true otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="ys_len"></a>
+		<h3>ys_len</h3>
+		
+		<blockquote><pre>size_t <B>ys_len</B>(const ystr_t s);</pre></blockquote>
+		Return the length of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;The ystring.</td></tr>
+		</table></center><br />
+		<b>Result: </b>The ystring's length.<br /><br />
+		<hr width="100%" />
+		<a name="ys_append"></a>
+		<h3>ys_append</h3>
+		
+		<blockquote><pre>bool <B>ys_append</B>(ystr_t *dest, const char *src);</pre></blockquote>
+		Concatenate a character string at the end of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>dest</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+			<tr><td align="center"><tt>src</tt></td><td>&nbsp;A pointer to the character string.</td></tr>
+		</table></center><br />
+		<b>Result: </b>false if an error occurs, true otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="ys_prepend"></a>
+		<h3>ys_prepend</h3>
+		
+		<blockquote><pre>bool <B>ys_prepend</B>(ystr_t *dest, const char *src);</pre></blockquote>
+		Concatenate a character string at the begining of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>dest</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+			<tr><td align="center"><tt>src</tt></td><td>&nbsp;A pointer to the character string.</td></tr>
+		</table></center><br />
+		<b>Result: </b>false if an error occurs, true otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="ys_nappend"></a>
+		<h3>ys_nappend</h3>
+		
+		<blockquote><pre>bool <B>ys_nappend</B>(ystr_t *dest, const char *src, size_t n);</pre></blockquote>
+		Concatenate a given number of characters from a character string to an ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>dest</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+			<tr><td align="center"><tt>src</tt></td><td>&nbsp;A pointer to the character string.</td></tr>
+			<tr><td align="center"><tt>n</tt></td><td>&nbsp;The number of characters to copy.</td></tr>
+		</table></center><br />
+		<b>Result: </b>false if an error occurs, true otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="ys_nprepend"></a>
+		<h3>ys_nprepend</h3>
+		
+		<blockquote><pre>bool <B>ys_nprepend</B>(ystr_t *dest, const char *src, size_t n);</pre></blockquote>
+		Concatenate a given number of characters from a character string at thbegining of an ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>dest</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+			<tr><td align="center"><tt>src</tt></td><td>&nbsp;A pointer to the character string.</td></tr>
+			<tr><td align="center"><tt>n</tt></td><td>&nbsp;The number of characters to copy.</td></tr>
+		</table></center><br />
+		<b>Result: </b>0 if an error occurs, 1 otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="ys_dup"></a>
+		<h3>ys_dup</h3>
+		
+		<blockquote><pre>ystr_t <B>ys_dup</B>(const ystr_t s);</pre></blockquote>
+		Duplicate a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;The ystring.</td></tr>
+		</table></center><br />
+		<b>Result: </b>The new ystring.<br /><br />
+		<hr width="100%" />
+		<a name="ys_string"></a>
+		<h3>ys_string</h3>
+		
+		<blockquote><pre>char *<B>ys_string</B>(const ystr_t s);</pre></blockquote>
+		Create a copy of a ystring. The copy is a simple (char*) string, not bufferized.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;The ystring.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the created string, or NULL if an error occurs.<br /><br />
+		<hr width="100%" />
+		<a name="ys_concat"></a>
+		<h3>ys_concat</h3>
+		
+		<blockquote><pre>ystr_t <B>ys_concat</B>(const char *s1, const char *s2);</pre></blockquote>
+		Concatenate 2 character strings to create a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s1</tt></td><td>&nbsp;A pointer to the first character string.</td></tr>
+			<tr><td align="center"><tt>s2</tt></td><td>&nbsp;A pointer to the second character string.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the new ystring.<br /><br />
+		<hr width="100%" />
+		<a name="ys_ltrim"></a>
+		<h3>ys_ltrim</h3>
+		
+		<blockquote><pre>void <B>ys_ltrim</B>(ystr_t s);</pre></blockquote>
+		Remove all spaces at the beginning of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;The ystring.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ys_rtrim"></a>
+		<h3>ys_rtrim</h3>
+		
+		<blockquote><pre>void <B>ys_rtrim</B>(ystr_t s);</pre></blockquote>
+		Remove all spaces at the end of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;The ystring.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ys_trim"></a>
+		<h3>ys_trim</h3>
+		
+		<blockquote><pre>void <B>ys_trim</B>(ystr_t s);</pre></blockquote>
+		Remove all spaces at the beginning and the end of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;The ytring.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ys_lshift"></a>
+		<h3>ys_lshift</h3>
+		
+		<blockquote><pre>char <B>ys_lshift</B>(ystr_t s);</pre></blockquote>
+		Remove the first character of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;The ystring.</td></tr>
+		</table></center><br />
+		<b>Result: </b>The removed character.<br /><br />
+		<hr width="100%" />
+		<a name="ys_rshift"></a>
+		<h3>ys_rshift</h3>
+		
+		<blockquote><pre>char <B>ys_rshift</B>(ystr_t s);</pre></blockquote>
+		Remove the last character of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;The ystring.</td></tr>
+		</table></center><br />
+		<b>Result: </b>The removed character.<br /><br />
+		<hr width="100%" />
+		<a name="ys_putc"></a>
+		<h3>ys_putc</h3>
+		
+		<blockquote><pre>bool <B>ys_putc</B>(ystr_t *s, char c);</pre></blockquote>
+		Add a character at the beginning of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+			<tr><td align="center"><tt>c</tt></td><td>&nbsp;The character to add.</td></tr>
+		</table></center><br />
+		<b>Result: </b>false if an error occurs, true otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="ys_addc"></a>
+		<h3>ys_addc</h3>
+		
+		<blockquote><pre>bool <B>ys_addc</B>(ystr_t *s, char c);</pre></blockquote>
+		Add a character at the end of a ystring.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+			<tr><td align="center"><tt>c</tt></td><td>&nbsp;The character to add.</td></tr>
+		</table></center><br />
+		<b>Result: </b>false if an error occurs, true otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="ys_upcase"></a>
+		<h3>ys_upcase</h3>
+		
+		<blockquote><pre>void <B>ys_upcase</B>(char *s);</pre></blockquote>
+		Convert all characters of a character string to upper case.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ys_lowcase"></a>
+		<h3>ys_lowcase</h3>
+		
+		<blockquote><pre>void <B>ys_lowcase</B>(char *s);</pre></blockquote>
+		Convert all characters of a character string to lower case.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ys_printf"></a>
+		<h3>ys_printf</h3>
+		
+		<blockquote><pre>bool <B>ys_printf</B>(ystr_t *s, char *format, ...);</pre></blockquote>
+		Write inside a ystring using formatted arguments. The ystring must be long enough (use ys_setsz() before), otherwise the resulting string will be truncate.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+			<tr><td align="center"><tt>format</tt></td><td>&nbsp;Format string (like in printf()).</td></tr>
+			<tr><td align="center"><tt>...</tt></td><td>&nbsp;Variable argument list.</td></tr>
+		</table></center><br />
+		<b>Result: </b>false if an error occurs, true otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="ys_vprintf"></a>
+		<h3>ys_vprintf</h3>
+		
+		<blockquote><pre>bool <B>ys_vprintf</B>(ystr_t *s, char *format, va_list args);</pre></blockquote>
+		Same as ys_printf(), but the variable arguments are given trough a va_list.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>s</tt></td><td>&nbsp;A pointer to the ystring.</td></tr>
+			<tr><td align="center"><tt>format</tt></td><td>&nbsp;Format string (like in printf()).</td></tr>
+			<tr><td align="center"><tt>args</tt></td><td>&nbsp;Variable argument list.</td></tr>
+		</table></center><br />
+		<b>Result: </b>false if an error occurs, true otherwise.<br /><br />
+		<hr width="100%" />
+		<a name="ys_str2hexa"></a>
+		<h3>ys_str2hexa</h3>
+		
+		<blockquote><pre>ystr_t <B>ys_str2hexa</B>(const char *str);</pre></blockquote>
+		Convert a character string to the hexadecimal representation of this string.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>str</tt></td><td>&nbsp;Character string that must be converted.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A ystring that contains the converted string, or NULL.<br /><br />
+		<hr width="100%" />
+		<a name="ys_subs"></a>
+		<h3>ys_subs</h3>
+		
+		<blockquote><pre>ystr_t <B>ys_subs</B>(const char *orig, const char *from, const char *to);</pre></blockquote>
+		Substitute a string by another, inside a charater string.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>orig</tt></td><td>&nbsp;The original character string.</td></tr>
+			<tr><td align="center"><tt>from</tt></td><td>&nbsp;The string to substitute.</td></tr>
+			<tr><td align="center"><tt>to</tt></td><td>&nbsp;The substitution string.</td></tr>
+		</table></center><br />
+		<b>Result: </b> A ystring that contains the substituted string, or NULL.<br /><br />
+		<hr width="100%" />
+		<a name="ys_casesubs"></a>
+		<h3>ys_casesubs</h3>
+		
+		<blockquote><pre>ystr_t <B>ys_casesubs</B>(const char *orig, const char *from, const char *to);</pre></blockquote>
+		Substitute a string by another, in a case-insensitive manner.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>orig</tt></td><td>&nbsp;The original character string.</td></tr>
+			<tr><td align="center"><tt>from</tt></td><td>&nbsp;The string to substitute.</td></tr>
+			<tr><td align="center"><tt>to</tt></td><td>&nbsp;The substitution string.</td></tr>
+		</table></center><br />
+		<b>Result: </b> A ystring that contains the substituted string, or NULL.<br /><br />
+		<hr width="100%" />
+		<a name="_str2xmlentity"></a>
+		<h3>_str2xmlentity</h3>
+		
+		<blockquote><pre>ystr_t str2xmlentity(char *str);
+
+/*!
+ * @function	_xmlentity2str
+ *		Convert a string into a ystring where XML entities are replaced by
+ *		their XML special characters.
+ * @param	str	The XML encoded character string.
+ * @return	The unconverted string, or NULL.
+ */
+ystr_t xmlentity2str(char *str);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif // __cplusplus || c_plusplus
+
+#endif // __YSTR_H__
+</pre></blockquote>
+		Convert a character string into a ystring where each XML special characters are replaced by their corresponding XML entities.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>str</tt></td><td>&nbsp;Character string that must be converted.</td></tr>
+		</table></center><br />
+		<b>Result: </b>The converted string, or NULL.<br /><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ylist.h&nbsp;/&nbsp;Functions&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Functions</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="ylist_new"></a>
+		<h3>ylist_new</h3>
+		
+		<blockquote><pre>ylist_t *<B>ylist_new</B>(void);</pre></blockquote>
+		Creates a new list.<br /><br />
+		<b>Result: </b>A pointer to the created list.<br /><br />
+		<hr width="100%" />
+		<a name="ylist_foreach"></a>
+		<h3>ylist_foreach</h3>
+		
+		<blockquote><pre>void <B>ylist_foreach</B>(ylist_t *list, ylist_func_t func, void *user_data);</pre></blockquote>
+		Process a function on all elements of a list.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>list</tt></td><td>&nbsp;Pointer to the list.</td></tr>
+			<tr><td align="center"><tt>func</tt></td><td>&nbsp;Function to apply. The loop stops if the function returns false.</td></tr>
+			<tr><td align="center"><tt>user_data</tt></td><td>&nbsp;Pointer to some user data.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ylist_rewind"></a>
+		<h3>ylist_rewind</h3>
+		
+		<blockquote><pre>void <B>ylist_rewind</B>(ylist_t *list);</pre></blockquote>
+		Put the internal pointer to the first element of the list.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>list</tt></td><td>&nbsp;Pointer to the list.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ylist_delete"></a>
+		<h3>ylist_delete</h3>
+		
+		<blockquote><pre>bool <B>ylist_delete</B>(ylist_t *list, ylist_func_t delete_function, void *user_data);</pre></blockquote>
+		Destroy a list and all its elements.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>list</tt></td><td>&nbsp;Pointer to the list.</td></tr>
+			<tr><td align="center"><tt>delete_function</tt></td><td>&nbsp;Callback used to free the list elements.</td></tr>
+			<tr><td align="center"><tt>user_data</tt></td><td>&nbsp;Pointer given to the delete function.</td></tr>
+		</table></center><br />
+		<b>Result: </b>true if the list was successfully deleted.<br /><br />
+		<hr width="100%" />
+		<a name="ylist_add"></a>
+		<h3>ylist_add</h3>
+		
+		<blockquote><pre>ylist_elem_t *<B>ylist_add</B>(ylist_t *list, void *data);</pre></blockquote>
+		Add an element at the end of a list.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>list</tt></td><td>&nbsp;Pointer to the list.</td></tr>
+			<tr><td align="center"><tt>data</tt></td><td>&nbsp;Pointer to the added data.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the list element.<br /><br />
+		<hr width="100%" />
+		<a name="ylist_put"></a>
+		<h3>ylist_put</h3>
+		
+		<blockquote><pre>ylist_elem_t *<B>ylist_put</B>(ylist_t *list, void *data);</pre></blockquote>
+		Add an element at the beginning of a list.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>list</tt></td><td>&nbsp;Pointer to the list.</td></tr>
+			<tr><td align="center"><tt>data</tt></td><td>&nbsp;Pointer to the added data.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the list element.<br /><br />
+		<hr width="100%" />
+		<a name="ylist_get"></a>
+		<h3>ylist_get</h3>
+		
+		<blockquote><pre>void *<B>ylist_get</B>(ylist_t *list);</pre></blockquote>
+		Remove the last element of a list.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>list</tt></td><td>&nbsp;Pointer to the list.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the last element's data.<br /><br />
+		<hr width="100%" />
+		<a name="ylist_pop"></a>
+		<h3>ylist_pop</h3>
+		
+		<blockquote><pre>void *<B>ylist_pop</B>(ylist_t *list);</pre></blockquote>
+		Remove the first element of a list.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>list</tt></td><td>&nbsp;Pointer to the list.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the first element's data.<br /><br />
+		<hr width="100%" />
+		<a name="ylist_swap"></a>
+		<h3>ylist_swap</h3>
+		
+		<blockquote><pre>void <B>ylist_swap</B>(ylist_elem_t *elem, ylist_t *dest);</pre></blockquote>
+		Extract a list element from one list, and add it at the end of another list.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>elem</tt></td><td>&nbsp;The element to swap.</td></tr>
+			<tr><td align="center"><tt>dest</tt></td><td>&nbsp;The destination list.</td></tr>
+		</table></center><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

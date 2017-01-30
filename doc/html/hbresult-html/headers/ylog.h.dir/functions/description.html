@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ylog.h&nbsp;/&nbsp;Functions&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Functions</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="ylog_init"></a>
+		<h3>ylog_init</h3>
+		
+		<blockquote><pre>void <B>ylog_init</B>(unsigned int setup, const char *progname, ...);</pre></blockquote>
+		Initialize the logging system.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>setup</tt></td><td>&nbsp;Log type. Boolean comination of ylog_type_t values.</td></tr>
+			<tr><td align="center"><tt>progname</tt></td><td>&nbsp;Name of the current process.</td></tr>
+			<tr><td align="center"><tt>...</tt></td><td>&nbsp;List of other parameters, in this order: - Path to the log file. - Pointer to an handler function.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ylog_threshold"></a>
+		<h3>ylog_threshold</h3>
+		
+		<blockquote><pre>void <B>ylog_threshold</B>(ylog_priority_t threshold);</pre></blockquote>
+		Change the minimum priority level. Only messages with a greater or equal level will be written into logs.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>threshold</tt></td><td>&nbsp;New default priority threashold.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ylog_add"></a>
+		<h3>ylog_add</h3>
+		
+		<blockquote><pre>void <B>ylog_add</B>(ylog_priority_t prio, const char *file, int line,
+              const char *funcname, const char *str, ...);</pre></blockquote>
+		Write a new log entry.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>prio</tt></td><td>&nbsp;Priority level.</td></tr>
+			<tr><td align="center"><tt>file</tt></td><td>&nbsp;Name of the file where this log entry is added.</td></tr>
+			<tr><td align="center"><tt>line</tt></td><td>&nbsp;Number of the line where this log entry is added.</td></tr>
+			<tr><td align="center"><tt>func</tt></td><td>&nbsp;Caller function's name.</td></tr>
+			<tr><td align="center"><tt>str</tt></td><td>&nbsp;Main character string of the message.</td></tr>
+			<tr><td align="center"><tt>...</tt></td><td>&nbsp;Variable arguments.</td></tr>
+		</table></center><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

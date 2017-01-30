@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ylog.h&nbsp;/&nbsp;Function-like Macros&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Function-like Macro</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="YLOG"></a>
+		<h3>YLOG</h3>
+		
+		<blockquote><pre>#define <B>YLOG</B>(...)		ylog_add(YLOG_FORCE, __FILE__, __LINE__, 
+					 __func__, __VA_ARGS__)</pre></blockquote>
+		Add a simple log at the lowest sufficient level. The parameter could be a simple character string, or a string with several arguments (like in printf()). Return TRUE if the log entry was written, FALSE otherwise. <br /><br />
+		<hr width="100%" />
+		<a name="YLOG_ADD"></a>
+		<h3>YLOG_ADD</h3>
+		
+		<blockquote><pre>#define <B>YLOG_ADD</B>(prio, ...)	ylog_add(prio, __FILE__, __LINE__, 
+					 __func__, __VA_ARGS__)</pre></blockquote>
+		Add a log with a specified priority. The last parameter  could be a simple character string, or a string with several arguments (like in printf()). Return TRUE if the log entry was written, FALSE otherwise. <br /><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

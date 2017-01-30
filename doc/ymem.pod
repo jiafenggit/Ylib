@@ -1,0 +1,22 @@
+=pod
+
+=head1 NAME
+
+ymem.h - Memory management.
+
+=head1 SYNOPSIS
+
+#include "ymem.h"
+
+void *ymalloc(size_t size);
+
+void *ycalloc(size_t nbr, size_t size);
+
+void *yrealloc(void *ptr, size_t size);
+
+void *yfree(void *ptr);
+
+=head1 DESCRIPTION
+
+B<ymalloc>, B<ycalloc>, B<yrealloc> and B<yfree> are like the usual I<malloc>, I<calloc>, I<yrealloc> and I<free> functions, but are able to activate Boehm garbage collector.
+

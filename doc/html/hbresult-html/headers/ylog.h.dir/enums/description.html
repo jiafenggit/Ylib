@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ylog.h&nbsp;/&nbsp;Enumerations&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Enumerations</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="ylog_type_e"></a>
+		<h3>ylog_type_e</h3>
+		
+		<blockquote><pre>enum <B>ylog_type_e</B> {
+	YLOG_STDERR	= 1,
+	YLOG_FILE	= 2,
+	YLOG_SYSLOG	= 4,
+	YLOG_HANDLER	= 8
+};</pre></blockquote>
+		All different destinations possible for logs.<br /><br />
+		<b>Constants</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>YLOG_STDERR</tt></td><td>&nbsp;Logs are written on the standard error output.</td></tr>
+			<tr><td align="center"><tt>YLOG_FILE</tt></td><td>&nbsp;Logs are written on a given file.</td></tr>
+			<tr><td align="center"><tt>YLOG_SYSLOG</tt></td><td>&nbsp;Logs are written on the system logger.</td></tr>
+			<tr><td align="center"><tt>YLOG_HANDLER</tt></td><td>&nbsp;Logs are sent to a given handler.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ylog_priority_e"></a>
+		<h3>ylog_priority_e</h3>
+		
+		<blockquote><pre>enum <B>ylog_priority_e</B> {
+	YLOG_FORCE = -1,
+	YLOG_DEBUG = 0,
+	YLOG_INFO,
+	YLOG_NOTE,
+	YLOG_WARN,
+	YLOG_ERR,
+	YLOG_CRIT
+};</pre></blockquote>
+		Several priority levels are defined in ylogs. They are similar to the syslog's ones (see 'man 3 syslog')<br /><br />
+		<b>Constants</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>YLOG_FORCE</tt></td><td>&nbsp;Force message writing (don't use it for threshold).</td></tr>
+			<tr><td align="center"><tt>YLOG_DEBUG</tt></td><td>&nbsp;Debug-level message (lower priority level).</td></tr>
+			<tr><td align="center"><tt>YLOG_INFO</tt></td><td>&nbsp;Informational message (default level).</td></tr>
+			<tr><td align="center"><tt>YLOG_NOTE</tt></td><td>&nbsp;Notice ; normal but significant.</td></tr>
+			<tr><td align="center"><tt>YLOG_WARN</tt></td><td>&nbsp;Warning.</td></tr>
+			<tr><td align="center"><tt>YLOG_ERR</tt></td><td>&nbsp;Error.</td></tr>
+			<tr><td align="center"><tt>YLOG_CRIT</tt></td><td>&nbsp;Critical message (higher priority level).</td></tr>
+		</table></center><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

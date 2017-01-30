@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ysax.h&nbsp;/&nbsp;Functions&nbsp;/&nbsp;Description</font>
+<center>
+	<h1>Functions</h1>
+	<br />
+	<table width="80%"><tr><td>		<hr width="100%" />
+		<a name="ysax_new"></a>
+		<h3>ysax_new</h3>
+		
+		<blockquote><pre>ysax_t *<B>ysax_new</B>(void *parse_data);</pre></blockquote>
+		Create a SAX XML parser.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>parse_data</tt></td><td>&nbsp;Pointer to data that can be used by handlers.</td></tr>
+		</table></center><br />
+		<b>Result: </b>A pointer to the created parser, or NULL if an error occurs.<br /><br />
+		<hr width="100%" />
+		<a name="ysax_read_handler"></a>
+		<h3>ysax_read_handler</h3>
+		
+		<blockquote><pre>yerr_t <B>ysax_read_handler</B>(ysax_t *sax, char (*getc_hdlr)(void*),
+			 void (*ungetc_hdlr)(char,void*), void *xml_data);</pre></blockquote>
+		Launch the parsing of some XML data, using handlers to read data.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the SAX object.</td></tr>
+			<tr><td align="center"><tt>getc_hdlr</tt></td><td>&nbsp;Handler called to get one character.</td></tr>
+			<tr><td align="center"><tt>ungetc_hdlr</tt></td><td>&nbsp;Handler called to unget one character.</td></tr>
+			<tr><td align="center"><tt>xml_data</tt></td><td>&nbsp;Pointer to data used by handlers.</td></tr>
+		</table></center><br />
+		<b>Result: </b>An error code that show the return status of parse action.<br /><br />
+		<hr width="100%" />
+		<a name="ysax_read_file"></a>
+		<h3>ysax_read_file</h3>
+		
+		<blockquote><pre>yerr_t <B>ysax_read_file</B>(ysax_t *sax, const char *filename);</pre></blockquote>
+		Launch the parsing of an XML file.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the SAX object.</td></tr>
+			<tr><td align="center"><tt>filename</tt></td><td>&nbsp;Path to the file to parse.</td></tr>
+			<tr><td align="center"><tt>An</tt></td><td>&nbsp;error code that shows the return status of parse action.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ysax_read_stream"></a>
+		<h3>ysax_read_stream</h3>
+		
+		<blockquote><pre>yerr_t <B>ysax_read_stream</B>(ysax_t *sax, FILE *stream);</pre></blockquote>
+		Launch the parsing of an XML stream.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the SAX object.</td></tr>
+			<tr><td align="center"><tt>stream</tt></td><td>&nbsp;A pointer to an opened stream.</td></tr>
+		</table></center><br />
+		<b>Result: </b>An error code that shows the return status of parse action.<br /><br />
+		<hr width="100%" />
+		<a name="ysax_read_memory"></a>
+		<h3>ysax_read_memory</h3>
+		
+		<blockquote><pre>yerr_t <B>ysax_read_memory</B>(ysax_t *sax, char *mem);</pre></blockquote>
+		Launch the parsing of an XML buffer.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the SAX object.</td></tr>
+			<tr><td align="center"><tt>mem</tt></td><td>&nbsp;A pointer to a character string that contains the XML ti parse.</td></tr>
+		</table></center><br />
+		<b>Result: </b>An error code that shows the return status of parse action.<br /><br />
+		<hr width="100%" />
+		<a name="ysax_free"></a>
+		<h3>ysax_free</h3>
+		
+		<blockquote><pre>void <B>ysax_free</B>(ysax_t *sax);</pre></blockquote>
+		Delete a previously created SaAX XML parser.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the existing Sax parser.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ysax_set_tag_hdlr"></a>
+		<h3>ysax_set_tag_hdlr</h3>
+		
+		<blockquote><pre>void <B>ysax_set_tag_hdlr</B>(ysax_t *sax,
+		       void (*open_hdlr)(ysax_t*, char*, yvect_t),
+		       void (*close_hdlr)(ysax_t*, char*));</pre></blockquote>
+		Set the open tag and close tag handlers of the Sax XML parser.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the Sax parser.</td></tr>
+			<tr><td align="center"><tt>open_hdlr</tt></td><td>&nbsp;Function pointer to the handler call when an open tag is finded.</td></tr>
+			<tr><td align="center"><tt>close_hdlr</tt></td><td>&nbsp;Function pointer to the handler call when a close tag is finded.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ysax_set_inside_text_hdlr"></a>
+		<h3>ysax_set_inside_text_hdlr</h3>
+		
+		<blockquote><pre>void <B>ysax_set_inside_text_hdlr</B>(ysax_t *sax,
+			       void (*hdlr)(ysax_t*, char*));</pre></blockquote>
+		Set the inside text handler of the Sax XML parser.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the Sax parser.</td></tr>
+			<tr><td align="center"><tt>hdlr</tt></td><td>&nbsp;Function pointer to the handler call when a character is finded between an open and a close tag.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ysax_set_comment_hdlr"></a>
+		<h3>ysax_set_comment_hdlr</h3>
+		
+		<blockquote><pre>void <B>ysax_set_comment_hdlr</B>(ysax_t *sax,
+			   void (*hdlr)(ysax_t*, char*));</pre></blockquote>
+		Set the comment handler of a Sax XML parser.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the Sax parser.</td></tr>
+			<tr><td align="center"><tt>hdlr</tt></td><td>&nbsp;Function pointer to the handler call when a XML comment is finded.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ysax_set_process_instr_hdlr"></a>
+		<h3>ysax_set_process_instr_hdlr</h3>
+		
+		<blockquote><pre>void <B>ysax_set_process_instr_hdlr</B>(ysax_t *sax,
+				 void (*hdlr)(ysax_t*, char*, char*));</pre></blockquote>
+		Set the processing instruction of a Sax XML parser.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the Sax parser.</td></tr>
+			<tr><td align="center"><tt>hdlr</tt></td><td>&nbsp;Function pointer to the handler call when a processing instruciton is finded.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ysax_set_cdata_hdlr"></a>
+		<h3>ysax_set_cdata_hdlr</h3>
+		
+		<blockquote><pre>void <B>ysax_set_cdata_hdlr</B>(ysax_t *sax,
+			 void (*hdlr)(ysax_t*, char*));</pre></blockquote>
+		Set the CDATA handler of a Sax XML parser.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the Sax parser.</td></tr>
+			<tr><td align="center"><tt>hdlr</tt></td><td>&nbsp;Function pointer to the handler call when a CDATA instruction is finded.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ysax_stop"></a>
+		<h3>ysax_stop</h3>
+		
+		<blockquote><pre>void <B>ysax_stop</B>(ysax_t *sax);</pre></blockquote>
+		Stop the SAX parser. Use this function if you detect an error in a handler. The parser will return an YEL2HLT error (Level 2 halted).<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>sax</tt></td><td>&nbsp;A pointer to the Sax parser.</td></tr>
+		</table></center><br />
+		<hr width="100%" />
+		<a name="ysax_free_attr"></a>
+		<h3>ysax_free_attr</h3>
+		
+		<blockquote><pre>void <B>ysax_free_attr</B>(void *e, void *data);</pre></blockquote>
+		When a yvector of XML attributes is destroyed, this function can be passed as parameter to yv_del() to free all memory allocated for each element.<br /><br />
+		<b>Parameters</b>
+		<center><table border="1" width="80%%">
+			<tr><td align="center"><tt>e</tt></td><td>&nbsp;Pointer to the vector element (= ysax_attr_t*).</td></tr>
+			<tr><td align="center"><tt>data</tt></td><td>&nbsp;Non used pointer, here for prototype compatibility.</td></tr>
+		</table></center><br />
+		<hr width="100%%" />
+	</td></tr></table>
+</center>
+</body>
+</html>

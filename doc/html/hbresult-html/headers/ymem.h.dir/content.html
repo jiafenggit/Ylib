@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html>
+<body bgcolor="#ffffff">
+<font size="-1">/&nbsp;ymem.h&nbsp;/&nbsp;Content</font>
+<pre>/* Process this file with the HeaderBrowser tool (http://www.headerbrowser.org)
+   to create documentation. */
+
+#ifndef __YMEM_H__
+#define __YMEM_H__
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif /* __cplusplus || c_plusplus */
+
+#include <stdlib.h>
+
+
+void *ymalloc(size_t size);
+
+
+void *ycalloc(size_t nbr, size_t size);
+
+
+void *yfree(void *ptr);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif /* __cplusplus || c_plusplus */
+
+#endif /* __YMEM_H__ */
+</pre>
+</body>
+</html>
