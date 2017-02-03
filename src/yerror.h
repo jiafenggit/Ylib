@@ -157,11 +157,14 @@ extern "C" {
  * @constant	YECANCELED		Operation Canceled.
  * @constant	YENOKEY			Required key not available.
  * @constant	YEKEYEXPIRED		Key has expired.
- * @contstant	YEKEYREVOKED		Key has been revoked.
+ * @constant	YEKEYREVOKED		Key has been revoked.
  * @constant	YEKEYREJECTED		Key was rejected by service.
  * @constant	YEOWNERDEAD		Owner died.
  * @constant	YENOTRECOVERABLE	State not recoverable.
- * @constant	YESYNTAX		Syntax error. 
+ * @constant	YESYNTAX		Syntax error.
+ * @constant	YEBADPARAM		Bad parameter.
+ * @constant	YENULLPTR		Null pointer.
+ * @constant	YEINCOMPATIBLE		Incompatible.
  */
 enum yerr_e {
 	YEOK			= 1,
@@ -298,7 +301,10 @@ enum yerr_e {
 	YEKEYREJECTED		= -EKEYREJECTED,
 	YEOWNERDEAD		= -EOWNERDEAD,
 	YENOTRECOVERABLE	= -ENOTRECOVERABLE,
-	YESYNTAX		= -0xffff
+	YESYNTAX		= -0xffff,
+	YEBADPARAM		= -0x10000.
+	YENULLPTR		= -0x10001,
+	YEINCOMPATIBLE		= -0x10002
 };
 
 /** @typedef yerr_t See enum yerr_e. */

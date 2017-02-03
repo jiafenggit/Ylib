@@ -11,6 +11,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include "yerror.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -70,24 +71,23 @@ yarray_t *yarray_new(size_t element_size);
  *		yarray_init().
  * @param	a		Pointer to the yarray.
  * @param	f		Pointer to a function that will be called to delete each
- *				element of the yarray. Could be NULL; otherwise, must
- *				be of type type: void f(void *elem, void *data);
+ *				element of the yarray. Could be NULL.
  * @param	user_data	Pointer to data that would be given to the delete
  *				callback (see previous parameter). Could be NULL.
  */
-void yarray_clear(yarray_t *a, void (*f)(void*, void*), void *user_data);
+void yarray_clear(yarray_t *a, yarray_function_t f, void *user_data);
 
 /**
  * @function	yarray_free
  *		Delete an existing yarray.
  * @param	a		A pointer to the yarray.
  * @param	f		Pointer to a function that is called to delete each
- *				element of the array. Could be NULL ; otherwise, must
- *				have this prototype : void f(void *elem, void *data);
+ *				element of the array. Could be NULL.
  * @param	user_data	Pointer to data that could be given to the delete
  *				callback (see previous parameter). Could be NULL.
+ * @return	Always NULL.
  */
-void yarray_free(yarray_t *a, void (*f)(void*, void*), void *user_data);
+void *yarray_free(yarray_t *a, yarray_function_t f, void *user_data);
 
 /**
  * @function	yarray_duplicate
@@ -103,12 +103,11 @@ yarray_t *yarray_duplicate(yarray_t *a);
  *		change.
  * @param	a		The yarray.
  * @param	f		Pointer to a function that is called to delete each
- *				element of the array. Could be NULL ; otherwise, must
- *				have this prototype : void f(void *elem, void *data);
+ *				element of the array. Could be NULL.
  * @param	user_data	Pointer to data that could be given to the delete
  *				callback (see previous parameter). Could be NULL.
  */
-void yarray_truncate(yarray_t *a, void (*f)(void*, void*), void *user_data);
+void yarray_truncate(yarray_t *a, yarray_function_t f, void *user_data);
 
 /**
  * @function	yarra_resize
@@ -116,17 +115,25 @@ void yarray_truncate(yarray_t *a, void (*f)(void*, void*), void *user_data);
  * @param	a	A pointer to the yarray.
  * @param	size	The minimum size for this yarray.
  *			Must be larger than the used size.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if OK.
  */
-bool yarray_resize(yarray_t *a, size_t size);
+yerr_t yarray_resize(yarray_t *a, size_t size);
 
 /**
  * @function	yarray_shrink
  *		Shrink a yarray to fit its content.
  * @param	a	A pointer to the yarray.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if OK.
  */
-bool yarray_shrink(yarray_t *a);
+yerr_t yarray_shrink(yarray_t *a);
+
+/**
+ * @function	yarray_revert
+ *		Revert an array. The array is modified.
+ * @param	a	Pointer to the yarray.
+ * @return	YEOK if OK.
+ */
+yerr_t yarray_revert(yarray_t *a);
 
 /**
  * @function	yarray_count
@@ -141,18 +148,18 @@ size_t yarray_count(yarray_t *a);
  *		Add an element at the beginning of a yarray.
  * @param	a	A pointer to the yarray.
  * @param	e	A pointer to the element.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if OK.
  */
-bool yarray_add(yarray_t *a, void *e);
+yerr_t yarray_add(yarray_t *a, void *e);
 
 /**
  * @function	yarray_push
  *		Add an element at the end of a yarray.
  * @param	a	A pointer to the yarray.
  * @param	e	A pointer to the element.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if OK.
  */
-bool yarray_push(yarray_t *v, void *e);
+yerr_t yarray_push(yarray_t *v, void *e);
 
 /**
  * @function	yarray_insert
@@ -164,9 +171,9 @@ bool yarray_push(yarray_t *v, void *e);
  * @param	e	A pointer to the element.
  * @param	offset	Offset of the element in the array. Must be less or
  *			equal to the array's elements count.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if OK.
  */
-bool yarray_insert(yarray_t *a, void *e, size_t offset);
+yerr_t yarray_insert(yarray_t *a, void *e, size_t offset);
 
 /**
  * @function	yarray_get
@@ -228,9 +235,9 @@ yarray_t *yarray_splice(yarray_t *a, size_t offset, size_t length);
  * @param	dest	Pointer to the destination yarray.
  * @param	src	Pointer to the source yarray.
  * @param	offset	Offset of the injection.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if OK.
  */
-bool yarray_inject(yarray_t *dest, yarray_t *src, size_t offset);
+yerr_t yarray_inject(yarray_t *dest, yarray_t *src, size_t offset);
 
 /**
  * @function	yarray_ninject
@@ -241,27 +248,27 @@ bool yarray_inject(yarray_t *dest, yarray_t *src, size_t offset);
  * @param	src	Pointer to the source yarray.
  * @param	start	Offset of the starting source slice.
  * @param	length	Length of the source slice. 0 to go to the end of the array.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if OK.
  */
-bool yarray_ninject(yarray_t *dest, size_t offset, yarray_t *src, size_t start, size_t length);
+yerr_t yarray_ninject(yarray_t *dest, size_t offset, yarray_t *src, size_t start, size_t length);
 
 /**
  * @function	yarray_append
  *		Concatenate a yarray at the end of another one.
  * @param	dest	A pointer to the yarray to extend.
  * @param	src	A pointer to the source yarray.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if OK.
  */
-bool yarray_append(yarray_t *dest, yarray_t *src);
+yerr_t yarray_append(yarray_t *dest, yarray_t *src);
 
 /**
  * @function	yarray_prepend
  *		Concatenate a yarray at the beginning of another one.
  * @param	dest	Pointer to the yarray to extend.
  * @param	src	Pointer to the source yarray.
- * @return	false if an error occurs, true otherwise.
+ * @return	YEOK if OK.
  */
-bool yarray_prepend(yarray_t *dest, yarray_t *src);
+yerr_t yarray_prepend(yarray_t *dest, yarray_t *src);
 
 /**
  * @function	yarray_uniq

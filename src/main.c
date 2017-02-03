@@ -4,19 +4,19 @@
 //#include "yvector.h"
 //#include "yarray.h"
 #include <unistd.h>
-#include "yerror.h"
+#include "yarray_int.h"
+
+void print_int(size_t index, int i, void *data) {
+	printf("[%ld] %d\n", index, i);
+}
 
 int main() {
-	printf("OK 1\n");
-	sleep(1);
-	yerr_t ye = YEBUSY;
-	printf("OK 2\n");
-	sleep(1);
-	int yy = (int)ye;
-	printf("OK 3\n");
-	sleep(1);
-	printf("OK '%d'\n", YESYNTAX);
-	return (0);
+	yarray_int_t a;
+
+	yarray_int_init(&a);
+	yarray_int_push(&a, 12);
+	yarray_int_push(&a, 18);
+	yarray_int_foreach(&a, print_int, NULL);
 }
 
 #if 0

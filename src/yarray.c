@@ -34,62 +34,78 @@ yarray_t *yarray_new(size_t element_size) {
 	return (a);
 }
 
-void yarray_clear(yarray_t *a, void (*f)(void*, void*), void *user_data) {
+void yarray_clear(yarray_t *a, yarray_function_t f, void *user_data) {
 	if (!a || !a->size)
 		return;
-	if (f) {
-		for (size_t i = 0; i < a->count; ++i) {
-			uintptr_t ptr = (uintptr_t)a->data + (i * a->element_size);
-			f((void*)ptr, user_data);
-		}
-	}
-	free(a->data);
+	if (f)
+		yarray_foreach(a, f, user_data);
+	yfree(a->data);
 	a->size = a->count = 0;
 }
 
-void yarray_free(yarray_t *a, void (*f)(void*, void*), void *user_data) {
+void *yarray_free(yarray_t *a, yarray_function_t f, void *user_data) {
 	if (!a)
 		return;
 	yarray_clear(a, f, user_data);
-	free(a);
+	yfree(a);
+	return (NULL);
 }
 
 yarray_t *yarray_duplicate(yarray_t *a) {
 	return (yarray_slice(a, 0, 0));
 }
 
-void yarray_truncate(yarray_t *a, void (*f)(void*, void*), void *user_data) {
+void yarray_truncate(yarray_t *a, yarray_function_t f, void *user_data) {
 	if (!a)
 		return;
-	if (f) {
-		for (size_t i = 0; i < a->count; ++i) {
-			uintptr_t ptr = (uintptr_t)a->data + (i * a->element_size);
-			f((void*)ptr, user_data);
-		}
-	}
+	if (f)
+		yarray_foreach(a, f, user_data);
 	a->count = 0;
 }
 
-bool yarray_resize(yarray_t *a, size_t size) {
+yerr_t yarray_resize(yarray_t *a, size_t size) {
+	if (!a || !size || a->count > size)
+		return (YEBADPARAM);
 	void *new_data;
-
-	if (!a || !size || a->count > size ||
-	    !(new_data = yrealloc(a->data, _YARRAY_ROUND_SIZE(size) * a->element_size)))
-		return (false);
+	size_t new_size = _YARRAY_ROUND_SIZE(size);
+	if (!(new_data = yrealloc(a->data, new_size * a->element_size)))
+		return (YENOMEM);
 	a->data = new_data;
-	a->size = size;
-	return (true);
+	a->size = new_size;
+	return (YEOK);
 }
 
-bool yarray_shrink(yarray_t *a) {
+yerr_t yarray_shrink(yarray_t *a) {
+	if (!a)
+		return (YEBADPARAM);
+	if (!a->count)
+		return (YEOK);
 	void *new_data;
-
-	if (!a || !a->count ||
-	    !(new_data = yrealloc(a->data, _YARRAY_ROUND_SIZE(a->count) * a->element_size)))
-		return (false);
+	size_t new_size = _YARRAY_ROUND_SIZE(a->count);
+	if (!(new_data = yrealloc(a->data, new_size * a->element_size)))
+		return (YENOMEM);
 	a->data = new_data;
-	a->size = a->count;
-	return (true);
+	a->size = new_size;
+	return (YEOK);
+}
+
+yerr_t yarray_revert(yarray_t *a) {
+	if (!a)
+		return (YEBADPARAM);
+	if (a->count <= 1)
+		return (YEOK);
+	void *new_data;
+	size_t new_size = _YARRAY_ROUND_SIZE(a->count);
+	if (!(new_data = ymalloc(new_size)))
+		return (YENOMEM);
+	for (size_t offset_src = a->count, offset_dest = 0; offset_src > 0; --offset_src, ++offset_dest) {
+		uintptr_t ptr = (uintptr_t)a->data + ((offset - 1) * a->element_size);
+		memcpy(&new_data[offset_dest], (void*)ptr, a->element_size);
+	}
+	yfree(a->data);
+	a->data = new_data;
+	a->size = new_size;
+	return (YEOK);
 }
 
 size_t yarray_count(yarray_t *a) {
@@ -98,34 +114,50 @@ size_t yarray_count(yarray_t *a) {
 	return (a->count);
 }
 
-bool yarray_add(yarray_t *a, void *e) {
-	if (!a || (a->count == a->size && !yarray_resize(a, (a->size * 2))))
-		return (false);
+yerr_t yarray_add(yarray_t *a, void *e) {
+	if (!a)
+		return (YEBADPARAM);
+	if (a->count == a->size) {
+		yerr_t err = yarray_resize(a, (a->size * 2));
+		if (err != YEOK)
+			return (err);
+	}
 	uintptr_t ptr = (uintptr_t)a->data + a->element_size;
 	memmove((void*)ptr, a->data, a->count * a->element_size);
 	memcpy(a->data, e, a->element_size);
-	return (true);
+	a->count++;
+	return (YEOK);
 }
 
-bool yarray_push(yarray_t *a, void *e) {
-	if (!a || (a->count == a->size && !yarray_resize(a, (a->size * 2))))
-		return (false);
+yerr_t yarray_push(yarray_t *a, void *e) {
+	if (!a)
+		return (YEBADPARAM);
+	if (a->count == a->size) {
+		yerr_t err = yarray_resize(a, (a->size * 2));
+		if (err != YEOK)
+			return (err);
+	}
 	uintptr_t ptr = (uintptr_t)a->data + (a->count * a->element_size);
 	memcpy((void*)ptr, e, a->element_size);
 	a->count++;
-	return (true);
+	return (YEOK);
 }
 
-bool yarray_insert(yarray_t *a, void *e, size_t offset) {
-	if (!a || (a->count == a->size && !yarray_resize(a, (a->size * 2))))
-		return (false);
+yerr_t yarray_insert(yarray_t *a, void *e, size_t offset) {
+	if (!a)
+		return (YEBADPARAM);
+	if (a->count == a->size) {
+		yerr_t err = yarray_resize(a, (a->size * 2));
+		if (err != YEOK)
+			return (err);
+	}
 	if (offset >= a->count)
 		return (yarray_push(a, e));
 	uintptr_t ptr_dest = (uintptr_t)a->data + ((offset + 1) * a->element_size);
 	uintptr_t ptr_src = (uintptr_t)a->data + (offset * a->element_size);
 	memmove((void*)ptr_dest, (void*)ptr_src, (a->count - offset) * a->element_size);
 	memcpy((void*)ptr_src, e, a->element_size);
-	return (true);
+	return (YEOK);
 }
 
 void *yarray_get(yarray_t *a, size_t offset) {
@@ -197,44 +229,53 @@ yarray_t *yarray_splice(yarray_t *a, size_t offset, size_t length) {
 	return (nv);
 }
 
-bool yarray_inject(yarray_t *dest, yarray_t *src, size_t offset) {
+yerr_t yarray_inject(yarray_t *dest, yarray_t *src, size_t offset) {
 	uintptr_t ptr_dest, ptr_src;
 
-	if (!dest || !src || src->element_size != dest->element_size)
-		return (false);
+	if (!dest || !src)
+		return (YEBADPARAM);
+	if (src->element_size != dest->element_size)
+		return (YEINCOMPATIBLE);
 	offset = (offset > dest->count) ? dest->count : offset;
 	size_t total = dest->count + src->count;
-	if (dest->size < total && !yarray_resize(dest, total))
-		return (false);
+	if (dest->size < total) {
+		yerr_t err = yarray_resize(dest, total);
+		if (err != YEOK)
+			return (err);
+	}
 	if (offset == dest->count) {
 		ptr_dest = (uintptr_t)dest->data + (offset * src->element_size);
 		memcpy((void*)ptr_dest, src->data, src->count * src->element_size);
-		return (true);
+		return (YEOK);
 	}
 	ptr_dest = (uintptr_t)dest->data + ((offset + src->count) * src->element_size);
 	ptr_src = (uintptr_t)dest->data + (offset * src->element_size);
 	memmove((void*)ptr_dest, (void*)ptr_src, src->count * src->element_size);
 	memcpy((void*)ptr_src, src->data, src->count * src->element_size);
 	dest->count += src->count;
-	return (true);
+	return (YEOK);
 }
 
-bool yarray_ninject(yarray_t *dest, size_t offset, yarray_t *src, size_t start, size_t length) {
+yerr_t yarray_ninject(yarray_t *dest, size_t offset, yarray_t *src, size_t start, size_t length) {
 	uintptr_t ptr_dest, ptr_src;
 
-	if (!dest || !src || src->element_size != dest->element_size ||
-	    (start + length) > src->count)
-		return (false);
+	if (!dest || !src || (start + length) > src->count)
+		return (YEBADPARAM);
+	if (src->element_size != dest->element_size)
+		return (YEINCOMPATIBLE);
 	offset = (offset > dest->count) ? dest->count : offset;
 	length = !length ? (src->count - start) : length;
 	size_t total = dest->count + length;
-	if (dest->size < total && !yarray_resize(dest, total))
-		return (false);
+	if (dest->size < total) {
+		yerr_t err = yarray_resize(dest, total);
+		if (err != YEOK)
+			return (err);
+	}
 	if (offset == dest->count) {
 		ptr_dest = (uintptr_t)dest->data + (offset * src->element_size);
 		ptr_src = (uintptr_t)src->data + (start * src->element_size);
 		memcpy((void*)ptr_dest, (void*)ptr_src, length * src->element_size);
-		return (true);
+		return (YEOK);
 	}
 	ptr_dest = (uintptr_t)dest->data + ((offset + length) * src->element_size);
 	ptr_src = (uintptr_t)dest->data + (offset * src->element_size);
@@ -243,14 +284,14 @@ bool yarray_ninject(yarray_t *dest, size_t offset, yarray_t *src, size_t start, 
 	ptr_src = (uintptr_t)src->data + (start * src->element_size);
 	memcpy((void*)ptr_dest, (void*)ptr_src, length * src->element_size);
 	dest->count += length;
-	return (true);
+	return (YEOK);
 }
 
-bool yarray_append(yarray_t *dest, yarray_t *src) {
+yerr_t yarray_append(yarray_t *dest, yarray_t *src) {
 	return (yarray_inject(dest, src, dest->count));
 }
 
-bool yarray_prepend(yarray_t *dest, yarray_t *src) {
+yerr_t yarray_prepend(yarray_t *dest, yarray_t *src) {
 	return (yarray_inject(dest, src, 0));
 }
 
